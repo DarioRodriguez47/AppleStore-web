@@ -1,9 +1,4 @@
-name: Deploy docs to GitHub Pages
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+name: Deploy docs to GitHub Pages (gh-pages)
 
 on:
   push:
@@ -11,20 +6,14 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Upload docs folder
-        uses: actions/upload-pages-artifact@v1
+      - name: Deploy /docs to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          path: docs
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v1
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
