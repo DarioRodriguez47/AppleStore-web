@@ -13,11 +13,9 @@ import applemusic from "../img/applemusic.png";
 import imagen8 from "../img/image8.png";
 import imagen9 from "../img/image9.jpg";
 import { useState } from "react";
-import LoginModal from "./LoginModal";
-import ForgotPasswordModal from "./ForgotPasswordModal";
+import { AuthModal } from "./modals";
 const AppleProducts = () => {
   const [showLogin, setShowLogin] = useState(false);
-  const [showForgot, setShowForgot] = useState(false);
 
   const handleLoginClick = () => {
     setShowLogin(true);
@@ -25,15 +23,6 @@ const AppleProducts = () => {
 
   const handleCloseLogin = () => {
     setShowLogin(false);
-  };
-
-  const handleOpenForgot = () => {
-    setShowLogin(false);
-    setShowForgot(true);
-  };
-
-  const handleCloseForgot = () => {
-    setShowForgot(false);
   };
 
   return (
@@ -59,8 +48,7 @@ const AppleProducts = () => {
         </div>
       </nav>
 
-      {showLogin && <LoginModal onClose={handleCloseLogin} onOpenForgot={handleOpenForgot} />}
-      {showForgot && <ForgotPasswordModal onClose={handleCloseForgot} />}
+      {showLogin && <AuthModal onClose={handleCloseLogin} />}
 
       <header id="iphone">
         <div className="grid">

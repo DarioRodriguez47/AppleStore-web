@@ -1,0 +1,177 @@
+/* Overlay con desenfoque */
+.login-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(5px); /* Efecto moderno */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+/* Contenedor más elegante */
+.login-container {
+  background: #fff;
+  border-radius: 18px; /* Bordes más curvos */
+  max-width: 400px;
+  width: 100%;
+  padding: 40px; /* Más aire interno */
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+  position: relative;
+  animation: slideUp 0.3s ease-out;
+}
+
+/* Animación de entrada */
+@keyframes slideUp {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  text-align: center;
+  display: block; /* Cambiado de flex para centrar mejor */
+  margin-bottom: 30px;
+}
+
+.modal-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #1d1d1f;
+}
+
+.modal-subtitle {
+  color: #86868b;
+  font-size: 14px;
+}
+
+/* Inputs estilo moderno */
+.input-group {
+  display: flex;
+  align-items: center;
+  background: #f5f5f7; /* Fondo gris claro */
+  border-radius: 12px;
+  margin-bottom: 12px;
+  padding: 0 15px;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+
+.input-group:focus-within {
+  border-color: #0071e3;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.1);
+}
+
+.input-group input {
+  background: transparent;
+  border: none;
+  padding: 14px 10px;
+  width: 100%;
+  outline: none;
+  font-size: 15px;
+}
+
+/* Botón principal */
+.primary-button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  background: #0071e3;
+  color: #fff;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: opacity 0.2s;
+}
+
+.primary-button:hover:not(:disabled) {
+  background: #0077ed;
+}
+
+/* Footer y enlaces */
+.modal-footer {
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: #0066cc;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.link-button:hover {
+  text-decoration: underline;
+}
+
+.forgot-password {
+  font-size: 13px;
+  color: #86868b;
+}
+
+/* Mensajes */
+.error-message,
+.success-message {
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.error-message {
+  background: #fff2f2;
+  color: #d70000;
+}
+
+.success-message {
+  background: #f2fff5;
+  color: #00802b;
+}
+/* Posicionamiento del botón de cerrar */
+.login-close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  line-height: 1;
+  color: #999;
+  cursor: pointer;
+  padding: 5px;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+  z-index: 10;
+}
+
+/* Efecto al pasar el mouse */
+.login-close-button:hover {
+  color: #333;
+  transform: scale(1.1);
+}
+
+/* Asegúrate de que el contenedor padre tenga posición relativa 
+   para que el botón no se escape a la esquina de la pantalla */
+.login-container,
+.modal-content {
+  position: relative;
+  padding-top: 50px; /* Espacio para que el título no choque con la X */
+}
