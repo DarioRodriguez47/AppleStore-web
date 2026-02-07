@@ -1,53 +1,37 @@
 // services/AuthService.js
 
-import axios from "axios";
+// Auth service adaptado para sitio estático: usa localStorage para simular registro/login
 
-const API_URL = "http://localhost:3600"; // Cambia la URL según tu configuración
+const USERS_KEY = "static_users";
 
 export const login = async (username, password) => {
-  try {
-    const response = await axios.post(`${API_URL}/login`, {
-      username,
-      password,
-    });
-    return response.data;
-  } catch (error) {
-    throw new Error(error.response?.data?.message || "Error al iniciar sesión");
-  }
+  const users = JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
+  const user = users.find(
+    (u) => u.username === username && u.password === password,
+  );
+  if (!user) throw new Error("Credenciales inválidas (sitio estático)");
+  // Retornar token simulado
+  return { token: `local-token-${btoa(username)}` };
 };
 
-export const register = async (email, password, extra = {}) => {
-  try {
-    const payload = { email, password, ...extra };
-    const response = await axios.post(`${API_URL}/register`, payload);
-    return response.data;
-  } catch (error) {
-    throw new Error(error.response?.data?.message || "Error al registrarse");
-  }
+export const register = async (username, password, extra = {}) => {
+  const users = JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
+  if (users.find((u) => u.username === username))
+    throw new Error("Usuario ya existe");
+  const newUser = { username, password, ...extra };
+  users.push(newUser);
+  localStorage.setItem(USERS_KEY, JSON.stringify(users));
+  return { message: "Usuario registrado (sitio estático)" };
 };
 
 export const requestPasswordReset = async (email) => {
-  try {
-    const response = await axios.post(`${API_URL}/forgot-password`, { email });
-    return response.data;
-  } catch (error) {
-    throw new Error(
-      error.response?.data?.message ||
-        "Error al solicitar recuperación de contraseña",
-    );
-  }
+  // En sitio estático, solo simular
+  return {
+    message: "Si ese email existiera, se habría enviado un enlace (simulado).",
+  };
 };
 
 export const resetPassword = async (token, password) => {
-  try {
-    const response = await axios.post(`${API_URL}/reset-password`, {
-      token,
-      password,
-    });
-    return response.data;
-  } catch (error) {
-    throw new Error(
-      error.response?.data?.message || "Error al restablecer la contraseña",
-    );
-  }
+  // Simulación: no soportado en static
+  return { message: "Reset de contraseña simulado en sitio estático." };
 };
