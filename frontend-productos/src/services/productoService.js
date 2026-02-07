@@ -1,37 +1,30 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:3600';
+// Servicio adaptado para sitio estático.
+// Lee `public/data/productos.json` en producción (CRA copia `public` a `build`).
+const API_BASE = process.env.PUBLIC_URL || '';
 
 export const getProductos = async () => {
-  return await axios.get(`${API_URL}/productos`);
+  // Mantener la forma { data: { productos } } para compatibilidad con componentes existentes
+  const res = await fetch(`${API_BASE}/data/productos.json`);
+  const productos = await res.json().catch(() => []);
+  return { data: { productos } };
 };
 
 export const getProducto = async (id) => {
-  return await axios.get(`${API_URL}/producto/${id}`);
+  const res = await fetch(`${API_BASE}/data/productos.json`);
+  const productos = await res.json().catch(() => []);
+  const producto = productos.find(p => String(p._id) === String(id));
+  return { data: { producto } };
 };
 
-export const saveProducto = async (producto) => {
-  return await axios.post(`${API_URL}/guardar-producto`, producto);
-};
-
-export const updateProducto = async (id, producto) => {
-  return await axios.put(`${API_URL}/producto/${id}`, producto);
-};
-
-export const deleteProducto = async (id) => {
-  return await axios.delete(`${API_URL}/producto/${id}`);
-};
-
-export const uploadImage = async (id, formData) => {
-  return await axios.post(`${API_URL}/subir-imagen/${id}`, formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
-  });
-};
+// Las funciones que mutan datos no están disponibles en sitio estático.
+export const saveProducto = async () => { throw new Error('saveProducto no disponible en sitio estático'); };
+export const updateProducto = async () => { throw new Error('updateProducto no disponible en sitio estático'); };
+export const deleteProducto = async () => { throw new Error('deleteProducto no disponible en sitio estático'); };
+export const uploadImage = async () => { throw new Error('uploadImage no disponible en sitio estático'); };
 
 export const getImage = (imageName) => {
-  return `${API_URL}/get-imagen/${imageName}`;
+  // Si tienes imágenes en `public/uploads` usa `${API_BASE}/uploads/${imageName}`
+  return `${API_BASE}/data/${imageName}`;
 };
 
 

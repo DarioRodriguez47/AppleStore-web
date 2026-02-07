@@ -1,0 +1,29 @@
+[
+  {
+    "_id": "1",
+    "nombre": "iPhone 13",
+    "descripcion": "Smartphone Apple iPhone 13, 128GB",
+    "edicion": "Standard",
+    "anio": 2021,
+    "precio": 799,
+    "imagen": ""
+  },
+  {
+    "_id": "2",
+    "nombre": "MacBook Air M1",
+    "descripcion": "Portátil Apple MacBook Air con chip M1",
+    "edicion": "M1",
+    "anio": 2020,
+    "precio": 999,
+    "imagen": ""
+  },
+  {
+    "_id": "3",
+    "nombre": "iPad Pro",
+    "descripcion": "Tablet iPad Pro 11 pulgadas",
+    "edicion": "Pro",
+    "anio": 2022,
+    "precio": 799,
+    "imagen": ""
+  }
+]
