@@ -16,6 +16,13 @@ const LoginModal = ({ onClose, onOpenForgot }) => {
     setError("");
   };
 
+  const handleAutofillAdmin = () => {
+    // Solo habilitar autofill en desarrollo
+    if (process.env.NODE_ENV === 'production') return;
+    setUsername('admin@example.com');
+    setPassword('admin123');
+  };
+
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === "Escape") onClose();
@@ -81,11 +88,18 @@ const LoginModal = ({ onClose, onOpenForgot }) => {
               <a href="#" className="link" onClick={(e) => { e.preventDefault(); onOpenForgot && onOpenForgot(); }}>
                 ¿Olvidaste tu contraseña?
               </a>
+              {process.env.NODE_ENV !== 'production' && (
+                <div style={{ marginTop: 8 }}>
+                  <button className="link" onClick={(e) => { e.preventDefault(); handleAutofillAdmin(); }} style={{ border: 'none', background: 'transparent', cursor: 'pointer' }}>
+                    🔐 Autofill admin
+                  </button>
+                </div>
+              )}
             </>
           )}
         </div>
-        <button className="login-close-button" onClick={onClose}>
-          Cerrar
+        <button className="login-close-button" onClick={onClose} aria-label="Cerrar diálogo">
+          ×
         </button>
       </div>
     </div>
