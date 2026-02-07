@@ -64,7 +64,10 @@ const LoginModal = ({ onClose }) => {
         <a
           href="#"
           className="link"
-          onClick={handleLoginToggle}
+          onClick={(e) => {
+            e.preventDefault();
+            handleLoginToggle();
+          }}
           style={{ marginBottom: "10px" }}
         >
           {isLogin

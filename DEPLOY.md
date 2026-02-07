@@ -1,37 +1,30 @@
-# Deploy a GitHub Pages (static) for `frontend-productos`
+## Deploy: preparar `docs/` y publicar en GitHub Pages
 
-Pasos preparados (no ejecutados):
+He copiado la versión estática que corregimos a la carpeta `docs/`, lista para publicarse como sitio estático.
 
-1. Reemplaza `homepage` en `frontend-productos/package.json` por la URL real:
+Opciones para publicar en GitHub Pages:
 
-   "homepage": "https://<usuario>.github.io/<repositorio>"
+- Opción A — usar la carpeta `docs/` en la rama `main` (rápido):
 
-2. Opciones para desplegar:
+  1. Asegúrate de commitear los cambios locales:
 
-- Opción A (rápida, desde tu máquina) — usa `gh-pages`:
+     ```bash
+     git add docs/ DEPLOY.md
+     git commit -m "Deploy: actualizar docs con demo estática y login localStorage"
+     git push origin main
+     ```
 
-  ```bash
-  # desde la raíz del repo
-  cd frontend-productos
-  npm install
-  npm run deploy
-  ```
+  2. En GitHub: Settings → Pages → Source → Elige `main` branch y carpeta `/docs`.
 
-  Esto creará la carpeta `build` y publicará su contenido en la rama `gh-pages`.
+- Opción B — publicar en `gh-pages` (si prefieres rama separada):
 
-- Opción B (automática, GitHub Actions):
+  1. Desde `frontend-productos` configura `homepage` en `package.json`.
+  2. Instala `gh-pages` y ejecuta `npm run build` y `npm run deploy`.
 
-  - Ya añadí un workflow en `.github/workflows/deploy-frontend.yml` que construye `frontend-productos` y publica `frontend-productos/build` a GitHub Pages cuando haces push a `main`.
-  - Ya añadí un workflow en `.github/workflows/deploy-frontend.yml` que construye `frontend-productos` y publica `frontend-productos/build` a GitHub Pages cuando haces push a `main`.
-  - El workflow usa `peaceiris/actions-gh-pages` y publicará en la rama `gh-pages`. GitHub Pages servirá el sitio desde la rama `gh-pages` por defecto; no necesitas cambiar la configuración manualmente salvo revisar Settings → Pages si quieres otra fuente.
+Notas:
+- El sitio en `docs/` ahora sirve la demo estática (index + `css/main.css`, `js/main.js`, `data/productos.json`).
+- Las acciones que requieren backend (registro real, editar productos) no funcionarán—el login es local y usa `localStorage`.
 
-3. Alternativa: usar la carpeta `docs/`.
-
-  - Si prefieres servir desde `docs/` en la rama `main`, copia `docs_static/*` a `docs/` y GitHub Pages servirá desde `main/docs`.
-
-4. Nota sobre rutas y router:
-  - Usé `HashRouter` en `frontend-productos/src/index.js` para evitar problemas de rutas en GitHub Pages.
-  - Si usas `BrowserRouter`, debes configurar `basename` con `process.env.PUBLIC_URL`.
-
-5. Imágenes y mutaciones:
-  - Las operaciones que cambian datos no funcionan en sitio estático. Para imágenes, coloca archivos en `public/uploads` y referencia via `process.env.PUBLIC_URL + '/uploads/...'`.
+Si quieres, puedo:
+- Hacer el `git commit` aquí (necesito confirmación), o
+- Crear un workflow de GitHub Actions para publicar automáticamente desde `main/docs` cuando hagas push.
