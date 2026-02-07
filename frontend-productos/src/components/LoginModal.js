@@ -1,44 +1,54 @@
 // components/LoginModal.js
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./AppleProducts.css";
 import { login, register } from "../services/AuthService";
 import { useNavigate } from "react-router-dom";
-const LoginModal = ({ onClose }) => {
+const LoginModal = ({ onClose, onOpenForgot }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const handleLoginToggle = () => {
     setIsLogin(!isLogin);
     setError("");
   };
 
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
+    setLoading(true);
     try {
       if (isLogin) {
         await login(username, password);
-        alert("Inicio de sesión exitoso");
+        setLoading(false);
         navigate(`/`);
-
         onClose();
       } else {
         await register(username, password);
-        alert("Registro exitoso");
         setIsLogin(true);
         navigate(`/`);
+        onClose();
       }
-    } catch (error) {
-      setError(error.message);
+    } catch (err) {
+      setError(err.message || "Error en autenticación");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="login-overlay">
+    <div className="login-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className="login-container">
         <h2>{isLogin ? "Iniciar Sesión" : "Registro"}</h2>
         {error && <p className="error-message">{error}</p>}
@@ -57,20 +67,23 @@ const LoginModal = ({ onClose }) => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <button type="submit">
-            {isLogin ? "Iniciar Sesión" : "Registrarse"}
+          <button type="submit" disabled={loading}>
+            {loading ? (isLogin ? "Ingresando..." : "Registrando...") : isLogin ? "Iniciar Sesión" : "Registrarse"}
           </button>
         </form>
-        <a
-          href="#"
-          className="link"
-          onClick={handleLoginToggle}
-          style={{ marginBottom: "10px" }}
-        >
-          {isLogin
-            ? "¿No tienes una cuenta? Regístrate"
-            : "¿Ya tienes una cuenta? Inicia sesión"}
-        </a>
+        <div style={{ marginBottom: "10px" }}>
+          <a href="#" className="link" onClick={(e) => { e.preventDefault(); handleLoginToggle(); }}>
+            {isLogin ? "¿No tienes una cuenta? Regístrate" : "¿Ya tienes una cuenta? Inicia sesión"}
+          </a>
+          {isLogin && (
+            <>
+              <br />
+              <a href="#" className="link" onClick={(e) => { e.preventDefault(); onOpenForgot && onOpenForgot(); }}>
+                ¿Olvidaste tu contraseña?
+              </a>
+            </>
+          )}
+        </div>
         <button className="login-close-button" onClick={onClose}>
           Cerrar
         </button>
