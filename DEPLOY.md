@@ -28,3 +28,4 @@ Notas:
 Si quieres, puedo:
 - Hacer el `git commit` aquí (necesito confirmación), o
 - Crear un workflow de GitHub Actions para publicar automáticamente desde `main/docs` cuando hagas push.
+\nTrigger: redeploy forced at 2026-02-07T04:38:30Z
