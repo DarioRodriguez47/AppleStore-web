@@ -1,0 +1,29 @@
+[
+  {
+    "_id": "1",
+    "nombre": "iPhone 14",
+    "descripcion": "Smartphone Apple iPhone 14 - 128GB",
+    "edicion": "Standard",
+    "anio": 2022,
+    "precio": 799,
+    "imagen": "iphone14.jpg"
+  },
+  {
+    "_id": "2",
+    "nombre": "MacBook Air M2",
+    "descripcion": "Laptop Apple MacBook Air con chip M2 - 8GB RAM",
+    "edicion": "M2",
+    "anio": 2023,
+    "precio": 1199,
+    "imagen": "macbookairm2.jpg"
+  },
+  {
+    "_id": "3",
+    "nombre": "iPad Pro",
+    "descripcion": "Tablet Apple iPad Pro 11'' - 256GB",
+    "edicion": "Pro",
+    "anio": 2021,
+    "precio": 999,
+    "imagen": "ipadpro11.jpg"
+  }
+]

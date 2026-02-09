@@ -1,0 +1,36 @@
+# Node modules
+backend/node_modules/
+frontend-productos/node_modules/
+
+# Logs
+backend/logs/
+*.log
+
+# Environment variables
+backend/.env
+frontend-productos/.env
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de subida
+backend/uploads/
+
+# Otros
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+frontend-productos/package-lock.json
+
+# Visual Studio Code
+.vscode/
+
+# Producción y build
+backend/build/
+frontend-productos/build/
+
+# Archivos locales
+*.local
+*.env.*
