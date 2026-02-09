@@ -9,6 +9,15 @@ const AuthModal = ({ initialView = "login", onClose }) => {
   const [view, setView] = useState(initialView); // 'login' | 'register' | 'forgot'
   const [notice, setNotice] = useState("");
 
+  // Deshabilitar scroll del body al abrir el modal
+  useEffect(() => {
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, []);
+
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === "Escape") onClose();
