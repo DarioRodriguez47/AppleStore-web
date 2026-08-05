@@ -1,7 +1,7 @@
 // components/ProductoForm.js
 
 import React, { useState } from 'react';
-import { saveProducto, updateProducto, uploadImage } from '../services/productoService';
+import { saveProducto, updateProducto } from '../services/productoService';
 import './ProductoForm.css';
 
 const ProductoForm = ({ producto, isEdit, fetchProductos }) => {
@@ -18,8 +18,14 @@ const ProductoForm = ({ producto, isEdit, fetchProductos }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // No hay backend: la imagen se guarda como data URL para que el CRUD
+  // se vea completo sin necesitar un servidor de archivos.
   const handleImageChange = (e) => {
-    setFormData({ ...formData, imagen: e.target.files[0] });
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setFormData((prev) => ({ ...prev, imagen: reader.result }));
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = async (e) => {
@@ -27,13 +33,7 @@ const ProductoForm = ({ producto, isEdit, fetchProductos }) => {
     if (isEdit) {
       await updateProducto(producto._id, formData);
     } else {
-      const response = await saveProducto(formData);
-      console.log(response.data)
-      if (formData.imagen) {
-        const imageFormData = new FormData();
-        imageFormData.append('imagen', formData.imagen);
-        await uploadImage(response.data.libro._id, imageFormData);
-      }
+      await saveProducto(formData);
     }
     fetchProductos();
   };

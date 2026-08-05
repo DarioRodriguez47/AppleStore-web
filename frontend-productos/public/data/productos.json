@@ -1,29 +1,110 @@
 [
   {
     "_id": "1",
-    "nombre": "iPhone 14",
-    "descripcion": "Smartphone Apple iPhone 14 - 128GB",
+    "nombre": "iPhone 15",
+    "descripcion": "Smartphone Apple iPhone 15 - 128GB, cámara de 48MP",
     "edicion": "Standard",
-    "anio": 2022,
+    "anio": 2023,
     "precio": 799,
-    "imagen": "iphone14.jpg"
+    "imagen": "iphone-12.jpg"
   },
   {
     "_id": "2",
+    "nombre": "iPhone 15 Pro",
+    "descripcion": "Chasis de titanio, chip A17 Pro y cámara teleobjetivo",
+    "edicion": "Pro",
+    "anio": 2023,
+    "precio": 999,
+    "imagen": "iphone-12.jpg"
+  },
+  {
+    "_id": "3",
+    "nombre": "iPad Pro 11\"",
+    "descripcion": "Tablet Apple iPad Pro 11'' con chip M2 - 256GB",
+    "edicion": "Pro",
+    "anio": 2022,
+    "precio": 999,
+    "imagen": "ipad-pro.jpg"
+  },
+  {
+    "_id": "4",
+    "nombre": "iPad Air",
+    "descripcion": "iPad Air 10.9'' con chip M1 - 64GB",
+    "edicion": "Air",
+    "anio": 2022,
+    "precio": 599,
+    "imagen": "ipad-pro.jpg"
+  },
+  {
+    "_id": "5",
+    "nombre": "Apple Watch Series 9",
+    "descripcion": "GPS, caja de aluminio de 45mm, sensor de oxígeno en sangre",
+    "edicion": "Series 9",
+    "anio": 2023,
+    "precio": 429,
+    "imagen": "apple-watch.png"
+  },
+  {
+    "_id": "6",
+    "nombre": "Apple Watch SE",
+    "descripcion": "GPS, caja de aluminio de 40mm",
+    "edicion": "SE",
+    "anio": 2022,
+    "precio": 249,
+    "imagen": "apple-watch.png"
+  },
+  {
+    "_id": "7",
+    "nombre": "AirPods Pro (2ª generación)",
+    "descripcion": "Cancelación activa de ruido y audio espacial personalizado",
+    "edicion": "Pro",
+    "anio": 2022,
+    "precio": 249,
+    "imagen": "airpods.jpg"
+  },
+  {
+    "_id": "8",
+    "nombre": "AirPods (3ª generación)",
+    "descripcion": "Audio espacial y resistencia al agua",
+    "edicion": "Standard",
+    "anio": 2021,
+    "precio": 169,
+    "imagen": "airpods.jpg"
+  },
+  {
+    "_id": "9",
+    "nombre": "iMac 24\"",
+    "descripcion": "Todo en uno con chip M3, pantalla Retina 4.5K",
+    "edicion": "M3",
+    "anio": 2023,
+    "precio": 1299,
+    "imagen": "imac.jpg"
+  },
+  {
+    "_id": "10",
     "nombre": "MacBook Air M2",
     "descripcion": "Laptop Apple MacBook Air con chip M2 - 8GB RAM",
     "edicion": "M2",
     "anio": 2023,
     "precio": 1199,
-    "imagen": "macbookairm2.jpg"
+    "imagen": "imac.jpg"
   },
   {
-    "_id": "3",
-    "nombre": "iPad Pro",
-    "descripcion": "Tablet Apple iPad Pro 11'' - 256GB",
-    "edicion": "Pro",
-    "anio": 2021,
-    "precio": 999,
-    "imagen": "ipadpro11.jpg"
+    "_id": "11",
+    "nombre": "Apple Music",
+    "descripcion": "Suscripción mensual: más de 100 millones de canciones",
+    "edicion": "Individual",
+    "anio": 2024,
+    "precio": 5,
+    "imagen": "apple-music.png"
+  },
+  {
+    "_id": "12",
+    "nombre": "Apple TV+",
+    "descripcion": "Suscripción mensual a series y películas originales",
+    "edicion": "Individual",
+    "anio": 2024,
+    "precio": 7,
+    "imagen": "apple-tv.png"
   }
 ]

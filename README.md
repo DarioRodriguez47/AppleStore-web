@@ -1,9 +1,15 @@
 # Apple Catalog Manager
 
+Demo pública: **https://DarioRodriguez47.github.io/AppleStore-web/**
+
 Este proyecto es una aplicación web dividida en dos partes principales:
 
-- **backend/**: API REST con Node.js, Express y MongoDB para la gestión de productos Apple y autenticación de usuarios.
-- **frontend-productos/**: SPA en React para consumir la API y mostrar productos Apple.
+- **backend/**: API REST con Node.js, Express y MongoDB para la gestión de productos Apple y autenticación de usuarios. No está desplegado; queda disponible para desarrollo local o para una futura versión full-stack.
+- **frontend-productos/**: SPA en React. Es lo único que se despliega: corre como sitio estático (catálogo en JSON + `localStorage` para simular altas/ediciones/borrados y login), así que funciona sin necesitar el backend arriba.
+
+El despliegue a GitHub Pages es automático vía GitHub Actions en cada push a `main` (ver `.github/workflows/deploy.yml`).
+
+Para entender cómo están organizadas las capas, el flujo de datos y las decisiones de diseño, ver **[ARCHITECTURE.md](ARCHITECTURE.md)**.
 
 ## Estructura del proyecto
 

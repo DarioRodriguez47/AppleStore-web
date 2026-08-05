@@ -22,7 +22,7 @@ const ProductoDetail = () => {
   if (!producto) return <div className="loading">Cargando...</div>;
 
   const handleBackClick = () => {
-    navigate('/'); // Navegar al inicio
+    navigate('/catalogo');
   };
 
   const handleEditClick = () => {
@@ -38,7 +38,7 @@ const ProductoDetail = () => {
       <p className="detail-info">Precio: ${producto.precio}</p>
       {producto.imagen && <img src={getImage(producto.imagen)} alt={producto.nombre} className="detail-image" />}
       <div className="detail-buttons">
-        <button className="detail-button" onClick={handleBackClick}>Volver al Inicio</button>
+        <button className="detail-button" onClick={handleBackClick}>Volver al Catálogo</button>
         <button className="detail-button" onClick={handleEditClick}>Editar Producto</button>
       </div>
     </div>

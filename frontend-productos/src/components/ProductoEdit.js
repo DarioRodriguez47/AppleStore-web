@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getProducto, updateProducto, uploadImage } from "../services/productoService";
+import { getProducto, updateProducto } from "../services/productoService";
 import './ProductoEdit.css'; // Importar el archivo de estilos
 
 const ProductoEdit = () => {
@@ -23,7 +23,7 @@ const ProductoEdit = () => {
 
   const fetchProducto = async () => {
     const response = await getProducto(id);
-    setFormData(response.data.producto);
+    if (response.data.producto) setFormData(response.data.producto);
   };
 
   const handleChange = (e) => {
@@ -34,22 +34,20 @@ const ProductoEdit = () => {
     }));
   };
 
+  // No hay backend: la imagen se guarda como data URL para que el CRUD
+  // se vea completo sin necesitar un servidor de archivos.
   const handleImageChange = (e) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      imagen: e.target.files[0],
-    }));
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () =>
+      setFormData((prevData) => ({ ...prevData, imagen: reader.result }));
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await updateProducto(id, formData);
-    if (formData.imagen) {
-      const imageFormData = new FormData();
-      imageFormData.append("imagen", formData.imagen);
-      console.log(response.data)
-      await uploadImage(response.data.libroUpdated._id, imageFormData);
-    }
+    await updateProducto(id, formData);
     navigate(`/producto/${id}`);
   };
 

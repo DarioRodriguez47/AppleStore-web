@@ -330,6 +330,23 @@ header .img-container {
   font-size: 18px;
 }
 
+/** TIENDA CTA  */
+.tienda-cta {
+  height: auto;
+  padding: 70px 0;
+  background: #000;
+}
+
+.tienda-cta h1,
+.tienda-cta h3 {
+  color: #fff;
+}
+
+.tienda-cta .enlace-info {
+  color: #2997ff;
+  font-size: 21px;
+}
+
 /** FOOTER  */
 footer {
   width: 100%;

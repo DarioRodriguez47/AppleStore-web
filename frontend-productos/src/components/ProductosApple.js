@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./AppleProducts.css"; // Asegúrate de tener este archivo CSS en el mismo directorio
 import logo from "../img/logo.png";
 import imagen1 from "../img/image1.jpg";
@@ -38,7 +39,7 @@ const AppleProducts = () => {
           <a href="#airpods">AirPods</a>
           <a href="#musictv">Music / TV</a>
           <a href="#imac">iMac</a>
-          <a href="#donde-comprar">Dónde comprar</a>
+          <Link to="/catalogo">Tienda</Link>
           <a href="#">
             <span className="fas fa-search" aria-label="Search"></span>
           </a>
@@ -163,6 +164,18 @@ const AppleProducts = () => {
           </div>
           <div className="span12 img-container">
             <img src={imagen9} alt="" />
+          </div>
+        </div>
+      </section>
+
+      <section id="donde-comprar" className="tienda-cta">
+        <div className="grid">
+          <div className="span12 text-container">
+            <h1>Explora el catálogo completo</h1>
+            <h3>Precios, ediciones y disponibilidad de cada producto.</h3>
+            <Link to="/catalogo" className="enlace-info">
+              Ir a la tienda <span className="fas fa-angle-right"></span>
+            </Link>
           </div>
         </div>
       </section>
