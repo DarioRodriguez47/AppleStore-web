@@ -11,13 +11,14 @@ const ProductoDetail = () => {
   const [producto, setProducto] = useState(null);
 
   useEffect(() => {
-    fetchProducto();
-  }, []);
-
-  const fetchProducto = async () => {
-    const response = await getProducto(id);
-    setProducto(response.data.producto);
-  };
+    let cancelled = false;
+    getProducto(id).then((response) => {
+      if (!cancelled) setProducto(response.data.producto);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
 
   if (!producto) return <div className="loading">Cargando...</div>;
 

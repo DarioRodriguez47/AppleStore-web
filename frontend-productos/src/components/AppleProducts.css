@@ -157,6 +157,21 @@ nav .enlaces a:hover {
   opacity: 1;
 }
 
+.nav-icon-button {
+  background: none;
+  border: none;
+  color: #f5f5f7;
+  font-size: 14px;
+  padding: 0 10px;
+  opacity: 0.8;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.nav-icon-button:hover {
+  opacity: 1;
+}
+
 /** HEADER */
 header {
   width: 100%;

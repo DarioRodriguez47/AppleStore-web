@@ -81,16 +81,13 @@ const RegisterView = ({ onSwitch, onRegistered }) => {
         </form>
 
         <div className="modal-footer">
-          <a
-            href="#"
-            className="link"
-            onClick={(e) => {
-              e.preventDefault();
-              onSwitch("login");
-            }}
+          <button
+            type="button"
+            className="link-button"
+            onClick={() => onSwitch("login")}
           >
             ¿Ya tienes cuenta? Inicia sesión
-          </a>
+          </button>
         </div>
       </div>
     </div>

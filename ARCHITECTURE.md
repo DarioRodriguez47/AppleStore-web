@@ -135,6 +135,11 @@ Puntos a tener en cuenta:
   problema real: `react-scripts` + `eslint` más reciente rompía el build
   (ver `overrides.eslint` en `frontend-productos/package.json`). Si el build
   vuelve a romperse por una dependencia nueva, ese es el primer lugar a mirar.
+- **`CI=true` convierte los warnings de ESLint en errores de build.** GitHub
+  Actions define esa variable automáticamente, así que un `npm run build`
+  local que compila con warnings puede fallar en CI aunque en tu máquina se
+  vea bien. Antes de dar por buena una build, probarla con
+  `CI=true npm run build` (así es exactamente como corre en el workflow).
 - **404.html:** como es una SPA con rutas de cliente (`react-router`) y GitHub
   Pages es un host estático, se genera `build/404.html` (copia de `index.html`)
   con un script `postbuild`, para que entrar directo a `/producto/1` o

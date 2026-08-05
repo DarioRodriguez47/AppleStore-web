@@ -18,13 +18,14 @@ const ProductoEdit = () => {
   });
 
   useEffect(() => {
-    fetchProducto();
-  }, []);
-
-  const fetchProducto = async () => {
-    const response = await getProducto(id);
-    if (response.data.producto) setFormData(response.data.producto);
-  };
+    let cancelled = false;
+    getProducto(id).then((response) => {
+      if (!cancelled && response.data.producto) setFormData(response.data.producto);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
