@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { getProductos, deleteProducto, getImage } from '../services/productoService';
 import ProductoForm from './ProductoForm';
+import { useAuth } from '../context/AuthContext';
 import './ProductoList.css';
 
 const ProductoList = () => {
   const [productos, setProductos] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const navigate = useNavigate();
+  const { isAdmin } = useAuth();
 
   useEffect(() => {
     fetchProductos();
@@ -34,12 +36,22 @@ const ProductoList = () => {
           &larr; Volver a la tienda
         </Link>
         <h2 className="product-title">Catálogo</h2>
-        <button className="toggle-form-button" onClick={() => setShowForm((v) => !v)}>
-          {showForm ? "Cancelar" : "+ Añadir producto"}
-        </button>
+        {isAdmin ? (
+          <button className="toggle-form-button" onClick={() => setShowForm((v) => !v)}>
+            {showForm ? "Cancelar" : "+ Añadir producto"}
+          </button>
+        ) : (
+          <span className="public-badge">Vista pública</span>
+        )}
       </div>
 
-      {showForm && (
+      {!isAdmin && (
+        <p className="admin-hint">
+          Inicia sesión como administrador para añadir, editar o eliminar productos.
+        </p>
+      )}
+
+      {isAdmin && showForm && (
         <div className="product-form-wrapper">
           <ProductoForm
             fetchProductos={() => {
@@ -61,15 +73,17 @@ const ProductoList = () => {
               <span className="product-description">{producto.descripcion}</span>
               <span className="product-price">${producto.precio}</span>
             </div>
-            <button
-              className="delete-button"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleDelete(producto._id);
-              }}
-            >
-              Eliminar
-            </button>
+            {isAdmin && (
+              <button
+                className="delete-button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(producto._id);
+                }}
+              >
+                Eliminar
+              </button>
+            )}
           </li>
         ))}
       </ul>

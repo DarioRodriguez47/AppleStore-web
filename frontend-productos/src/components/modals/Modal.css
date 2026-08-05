@@ -144,6 +144,16 @@
   background: #f2fff5;
   color: #00802b;
 }
+
+.demo-hint {
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  margin-bottom: 20px;
+  text-align: center;
+  background: #f5f5f7;
+  color: #6e6e73;
+}
 /* Posicionamiento del botón de cerrar */
 .login-close-button {
   position: absolute;

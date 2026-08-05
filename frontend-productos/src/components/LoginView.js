@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { login } from "../services/AuthService";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const LoginView = ({ onClose, onSwitch, notice }) => {
   const [email, setEmail] = useState("");
@@ -8,6 +8,7 @@ const LoginView = ({ onClose, onSwitch, notice }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,6 +47,9 @@ const LoginView = ({ onClose, onSwitch, notice }) => {
       <div className="modal-body">
         {notice && <div className="success-message">{notice}</div>}
         {error && <div className="error-message">{error}</div>}
+        <div className="demo-hint">
+          Demo administrador: <strong>admin@apple.com</strong> / <strong>admin123</strong>
+        </div>
 
         <form className="login-form" onSubmit={handleSubmit}>
           <div className="input-group">

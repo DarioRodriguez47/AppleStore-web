@@ -3,11 +3,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getProducto, updateProducto } from "../services/productoService";
+import { useAuth } from "../context/AuthContext";
 import './ProductoEdit.css'; // Importar el archivo de estilos
 
 const ProductoEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { isAdmin } = useAuth();
   const [formData, setFormData] = useState({
     nombre: "",
     descripcion: "",
@@ -16,6 +18,12 @@ const ProductoEdit = () => {
     precio: "",
     imagen: null,
   });
+
+  // Ruta solo de administrador: si alguien entra directo por URL sin sesión,
+  // se lo redirige de vuelta al detalle (público, solo lectura).
+  useEffect(() => {
+    if (!isAdmin) navigate(`/producto/${id}`, { replace: true });
+  }, [isAdmin, id, navigate]);
 
   useEffect(() => {
     let cancelled = false;
@@ -26,6 +34,8 @@ const ProductoEdit = () => {
       cancelled = true;
     };
   }, [id]);
+
+  if (!isAdmin) return null;
 
   const handleChange = (e) => {
     const { name, value } = e.target;

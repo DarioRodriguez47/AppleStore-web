@@ -482,4 +482,16 @@ footer {
   background-color: #005bb5; /* Color más oscuro al pasar el ratón */
 }
 
+.nav-session {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-session-label {
+  color: #f5f5f7;
+  font-size: 13px;
+  opacity: 0.8;
+}
+
 /* Removed duplicate .login-container styles (moved to components/modals/Modal.css) */

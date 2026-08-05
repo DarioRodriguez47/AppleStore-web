@@ -4,6 +4,23 @@
 
 const USERS_KEY = "static_users";
 
+// Credencial de demo: cualquier cuenta logueada puede administrar el catálogo
+// (no hay un rol distinto de "cliente" en esta demo). Se siembra una sola vez
+// para que la vista de administrador se pueda probar sin registrarse antes.
+const ADMIN_DEMO_USER = {
+  username: "admin@apple.com",
+  password: "admin123",
+  name: "Administrador",
+};
+
+const seedDemoAdmin = () => {
+  const users = JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
+  if (users.length === 0) {
+    localStorage.setItem(USERS_KEY, JSON.stringify([ADMIN_DEMO_USER]));
+  }
+};
+seedDemoAdmin();
+
 export const login = async (username, password) => {
   const users = JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
   const user = users.find(

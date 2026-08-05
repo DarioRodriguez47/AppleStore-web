@@ -15,8 +15,10 @@ import imagen8 from "../img/image8.png";
 import imagen9 from "../img/image9.jpg";
 import { useState } from "react";
 import { AuthModal } from "./modals";
+import { useAuth } from "../context/AuthContext";
 const AppleProducts = () => {
   const [showLogin, setShowLogin] = useState(false);
+  const { user, isAdmin, logout } = useAuth();
 
   const handleLoginClick = () => {
     setShowLogin(true);
@@ -43,9 +45,18 @@ const AppleProducts = () => {
           <button type="button" className="nav-icon-button" aria-label="Buscar">
             <span className="fas fa-search"></span>
           </button>
-          <button className="nav-login-button" onClick={handleLoginClick}>
-            Iniciar Sesión
-          </button>
+          {isAdmin ? (
+            <div className="nav-session">
+              <span className="nav-session-label">Admin: {user.email}</span>
+              <button className="nav-login-button" onClick={logout}>
+                Cerrar sesión
+              </button>
+            </div>
+          ) : (
+            <button className="nav-login-button" onClick={handleLoginClick}>
+              Iniciar Sesión
+            </button>
+          )}
         </div>
       </nav>
 

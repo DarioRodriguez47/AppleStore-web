@@ -67,6 +67,28 @@ sin backend. Todas las funciones devuelven `{ data: { producto(s) } }`, el mismo
 shape que devolvería la API real — por eso los componentes no necesitan cambiar
 si mañana se apunta a `backend/`.
 
+### Sesión y vistas (público vs. administrador)
+
+La app tiene una sola sesión (no hay un rol de "cliente" separado): **estar
+logueado equivale a poder administrar el catálogo**. Sin sesión, la app se ve
+en modo público (solo lectura).
+
+```
+context/AuthContext.js   Estado de sesión (usuario logueado o no), persistido
+                          en localStorage. `isAdmin` = !!user.
+```
+
+- **Vista pública (sin sesión):** navega el catálogo y ve el detalle de cada
+  producto, pero no ve los botones de añadir/editar/eliminar.
+- **Vista administrador (con sesión):** además de lo anterior, puede crear
+  productos (`/catalogo`), editarlos (`/producto/editar/:id`) y borrarlos.
+  Si alguien entra por URL directa a `/producto/editar/:id` sin sesión, se lo
+  redirige de vuelta al detalle.
+- **Credencial de demo** (sembrada automáticamente la primera vez que carga la
+  app, ver `seedDemoAdmin` en `services/AuthService.js`):
+  `admin@apple.com` / `admin123`. También se muestra como pista dentro del
+  modal de login.
+
 ### Rutas
 
 | Ruta                     | Componente       | Qué hace                                   |
