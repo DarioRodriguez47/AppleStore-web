@@ -90,3 +90,16 @@ export const updateOrderStatus = async (id, estado) => {
   writeOrders(orders);
   return { data: { pedido: orders[idx] } };
 };
+
+// Rastreo público (sin sesión): número de pedido + teléfono, igual que
+// "rastrea tu pedido" en una tienda real. El teléfono actúa como
+// verificación mínima para no exponer el pedido de otra persona con solo
+// adivinar el número.
+export const trackOrder = async (numeroPedido, telefono) => {
+  const numero = String(numeroPedido || "").trim();
+  const tel = String(telefono || "").trim();
+  const pedido = readOrders().find(
+    (o) => formatOrderId(o.id) === numero && o.cliente.telefono === tel,
+  );
+  return { data: { pedido: pedido || null } };
+};

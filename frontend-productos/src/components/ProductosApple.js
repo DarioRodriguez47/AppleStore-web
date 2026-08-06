@@ -42,7 +42,8 @@ const AppleProducts = () => {
           <a href="#musictv">Music / TV</a>
           <a href="#imac">iMac</a>
           <Link to="/catalogo">Tienda</Link>
-          <Link to="/mis-pedidos">Mis pedidos</Link>
+          <Link to="/rastrear-pedido">Rastrear pedido</Link>
+          {user && !isAdmin && <Link to="/mis-pedidos">Mis pedidos</Link>}
           <button type="button" className="nav-icon-button" aria-label="Buscar">
             <span className="fas fa-search"></span>
           </button>

@@ -108,10 +108,14 @@ pedido en `/mis-pedidos`.
   **Productos** (crear, editar, borrar). Sin sesión muestra un login
   (`InlineLoginForm`); con sesión pero rol `cliente`, muestra un mensaje de
   "sin acceso" en vez del panel.
-- **Credencial de demo** (sembrada automáticamente la primera vez que carga la
-  app, ver `seedDemoAdmin` en `services/AuthService.js`):
-  `admin@apple.com` / `admin123`. Se muestra como pista en el modal de login
-  público.
+- **Credencial de admin** (sembrada automáticamente la primera vez que carga
+  la app, ver `seedDemoAdmin` en `services/AuthService.js`):
+  `admin@apple.com` / `admin123`. A propósito **no** se muestra en ningún
+  lado de la interfaz (ni el modal de login público ni el de `/admin`) — la
+  app está pensada para verse y comportarse como un sitio real, así que
+  ningún texto visible debe delatar que los datos son de prueba. Esta
+  credencial queda documentada acá y en el README para quien retome el
+  proyecto.
 - **Límite real de esta separación:** al ser un sitio 100% estático, el rol
   vive en `localStorage` — no hay backend que lo haga cumplir. Alguien con
   DevTools podría editar su propio registro y ponerse `role: "admin"`. No
@@ -129,7 +133,8 @@ cart/
   atoms/       QuantityStepper, StatusBadge — piezas mínimas sin lógica propia
   molecules/   CartLineItem, OrderCard — una fila de carrito / una tarjeta de pedido
   organisms/   CartSummary, CheckoutForm — bloques completos de UI
-  pages/       CarritoPage (/carrito), MisPedidosPage (/mis-pedidos)
+  pages/       CarritoPage (/carrito), MisPedidosPage (/mis-pedidos),
+                TrackOrderPage (/rastrear-pedido)
 ```
 
 Flujo: `ProductoList`/`ProductoDetail` llaman a `useCart().addItem(producto)`
@@ -139,11 +144,19 @@ createOrder` guarda el pedido y el carrito se vacía. El pedido queda
 disponible de inmediato en `/admin` → Pedidos, y también en `/mis-pedidos`
 para quien lo hizo.
 
-**"Mis pedidos" vs. lo que ve el administrador:** `getOrders()` (admin, ve
-todo) y `getMyOrders(email)` (cliente, solo lo suyo) son funciones distintas.
+**Tres formas distintas de ver pedidos, cada una con su propia función:**
+- `getOrders()` — todos los pedidos, solo para `/admin`.
+- `getMyOrders(email)` — los de la cuenta logueada, para `/mis-pedidos`
+  (enlace del nav oculto si no hay sesión; entrar por URL vieja sin sesión
+  redirige a `/productos` en vez de mostrar un formulario de login).
+- `trackOrder(numeroPedido, telefono)` — para `/rastrear-pedido`, público
+  (sin necesitar cuenta): el teléfono actúa como verificación mínima para
+  no poder ver el pedido de otra persona adivinando el número.
+
 `getMyOrders` filtra por `cliente.email`, que se llena con el email de la
-cuenta logueada al momento del checkout — los pedidos de demo no tienen
-`email`, así que nunca calzan con ninguna cuenta real.
+cuenta logueada al momento del checkout; `trackOrder` filtra por
+`formatOrderId(id) + cliente.telefono`. Los pedidos de ejemplo no tienen
+`email`, así que nunca calzan con ninguna cuenta real en `getMyOrders`.
 
 Se siembran 2 pedidos de ejemplo la primera vez que carga la app (ver
 `seedDemoOrders` en `orderService.js`), visibles solo en `/admin` → Pedidos
@@ -185,7 +198,8 @@ contenedores de layout (usar `<div>` con una clase propia).
 | `/catalogo`       | `ProductoList`     | Grid de productos público + "Agregar al carrito"      |
 | `/producto/:id`   | `ProductoDetail`   | Ficha de un producto + "Agregar al carrito"           |
 | `/carrito`        | `CarritoPage`      | Carrito; el checkout pide iniciar sesión/registrarse    |
-| `/mis-pedidos`    | `MisPedidosPage`   | Pedidos de la cuenta logueada (solo lectura)            |
+| `/mis-pedidos`    | `MisPedidosPage`   | Pedidos de la cuenta logueada (enlace oculto sin sesión) |
+| `/rastrear-pedido`| `TrackOrderPage`   | Buscar un pedido por número + teléfono, sin cuenta      |
 | `/admin`          | `AdminPage`        | Login si no hay sesión, "sin acceso" si no es admin, si no pestañas Pedidos/Productos |
 
 ### Cómo reconectar el backend

@@ -1,4 +1,4 @@
-import { createOrder, getOrders, getMyOrders, updateOrderStatus } from './orderService';
+import { createOrder, getOrders, getMyOrders, updateOrderStatus, trackOrder, formatOrderId } from './orderService';
 
 beforeEach(() => {
   localStorage.clear();
@@ -47,4 +47,14 @@ test('getMyOrders only returns orders belonging to that email', async () => {
 
   const { data: allData } = await getOrders();
   expect(allData.pedidos).toHaveLength(3);
+});
+
+test('trackOrder finds an order by short id + phone without needing a session', async () => {
+  const { data } = await createOrder(baseOrder);
+
+  const found = await trackOrder(formatOrderId(data.pedido.id), baseOrder.cliente.telefono);
+  expect(found.data.pedido.id).toBe(data.pedido.id);
+
+  const wrongPhone = await trackOrder(formatOrderId(data.pedido.id), '9999999999');
+  expect(wrongPhone.data.pedido).toBeNull();
 });

@@ -5,6 +5,7 @@ import ProductoDetail from "./components/ProductoDetail";
 import AppleProducts from "./components/ProductosApple";
 import CarritoPage from "./cart/pages/CarritoPage";
 import MisPedidosPage from "./cart/pages/MisPedidosPage";
+import TrackOrderPage from "./cart/pages/TrackOrderPage";
 import AdminPage from "./admin/pages/AdminPage";
 import "./index.css"
 
@@ -17,6 +18,7 @@ const App = () => {
       <Route path="/producto/:id" element={<ProductoDetail />} />
       <Route path="/carrito" element={<CarritoPage />} />
       <Route path="/mis-pedidos" element={<MisPedidosPage />} />
+      <Route path="/rastrear-pedido" element={<TrackOrderPage />} />
       <Route path="/admin" element={<AdminPage />} />
     </Routes>
   );
