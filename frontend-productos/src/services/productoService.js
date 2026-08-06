@@ -89,11 +89,6 @@ export const deleteProducto = async (id) => {
   return { data: { deleted: id } };
 };
 
-export const uploadImage = async (id, formData) => {
-  // En sitio estático no se suben archivos; simular respuesta
-  return { data: { message: "Upload disabled in static build" } };
-};
-
 export const getImage = (imageName) => {
   if (!imageName) return "";
   if (imageName.startsWith("http") || imageName.startsWith("data:")) return imageName;

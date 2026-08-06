@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import InlineLoginForm from "../../components/InlineLoginForm";
 import OrdersTable from "../organisms/OrdersTable";
@@ -9,6 +9,12 @@ import "./AdminPage.css";
 const AdminPage = () => {
   const { user, isAdmin, logout } = useAuth();
   const [tab, setTab] = useState("pedidos");
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/productos");
+  };
 
   if (!user) {
     return <InlineLoginForm title="Acceso administrador" />;
@@ -19,7 +25,7 @@ const AdminPage = () => {
       <div className="inline-login">
         <div className="inline-login-form">
           <h2>Sin acceso</h2>
-          <p className="demo-hint">
+          <p className="form-hint">
             Tu cuenta ({user.email}) no tiene permisos de administrador.
           </p>
           <Link to="/catalogo" className="checkout-submit">
@@ -41,7 +47,7 @@ const AdminPage = () => {
           <Link to="/catalogo" className="link-button">
             Ver tienda
           </Link>
-          <button className="nav-login-button" onClick={logout}>
+          <button className="nav-login-button" onClick={handleLogout}>
             Cerrar sesión
           </button>
         </div>

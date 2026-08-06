@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   getOrders,
   updateOrderStatus,
+  formatOrderId,
   ESTADOS_PEDIDO,
 } from "../../cart/services/orderService";
 import StatusBadge, { ESTADO_LABELS } from "../../cart/atoms/StatusBadge";
@@ -45,7 +46,7 @@ const OrdersTable = () => {
           {pedidos.map((pedido) => (
             <tr key={pedido.id}>
               <td>
-                <span className="order-id">#{pedido.id}</span>
+                <span className="order-id">#{formatOrderId(pedido.id)}</span>
                 <span className="order-date">
                   {new Date(pedido.fecha).toLocaleDateString()}
                 </span>

@@ -1,12 +1,13 @@
 import React from "react";
 import StatusBadge from "../atoms/StatusBadge";
+import { formatOrderId } from "../services/orderService";
 import "./OrderCard.css";
 
 const OrderCard = ({ pedido }) => (
   <div className="order-card">
     <div className="order-card-header">
       <div>
-        <span className="order-card-id">Pedido #{pedido.id}</span>
+        <span className="order-card-id">Pedido #{formatOrderId(pedido.id)}</span>
         <span className="order-card-date">
           {new Date(pedido.fecha).toLocaleDateString()}
         </span>

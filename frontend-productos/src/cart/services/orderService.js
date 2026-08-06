@@ -10,14 +10,15 @@ export const ESTADOS_PEDIDO = [
   "cancelado",
 ];
 
-const seedDemoOrders = () => {
+const seedSampleOrders = () => {
   if (localStorage.getItem(ORDERS_KEY)) return;
-  const demoOrders = [
+  const sampleOrders = [
     {
-      id: "demo-1001",
+      id: "ord_1785597600000",
       fecha: "2026-08-01T15:20:00.000Z",
-      // Sin "email": son pedidos de demo para el admin, no de una cuenta
-      // real, así que nunca deben aparecer en "mis pedidos" de nadie.
+      // Sin "email": son pedidos de ejemplo para poblar el panel de admin,
+      // no de una cuenta real, así que nunca deben aparecer en "mis
+      // pedidos" de nadie.
       cliente: { nombre: "Valentina Cruz", telefono: "0991234567" },
       entrega: { tipo: "delivery", direccion: "Av. Amazonas N34-120, Quito" },
       items: [
@@ -28,7 +29,7 @@ const seedDemoOrders = () => {
       estado: "en_preparacion",
     },
     {
-      id: "demo-1002",
+      id: "ord_1785751500000",
       fecha: "2026-08-03T10:05:00.000Z",
       cliente: { nombre: "Mateo Salazar", telefono: "0987654321" },
       entrega: { tipo: "retiro" },
@@ -37,9 +38,9 @@ const seedDemoOrders = () => {
       estado: "pendiente",
     },
   ];
-  localStorage.setItem(ORDERS_KEY, JSON.stringify(demoOrders));
+  localStorage.setItem(ORDERS_KEY, JSON.stringify(sampleOrders));
 };
-seedDemoOrders();
+seedSampleOrders();
 
 const readOrders = () => JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]");
 const writeOrders = (orders) =>
@@ -52,8 +53,8 @@ export const getOrders = async () => {
   return { data: { pedidos } };
 };
 
-// Pedidos de la cuenta logueada (por email). Los pedidos de demo no tienen
-// email, así que nunca calzan con una cuenta real.
+// Pedidos de la cuenta logueada (por email). Los pedidos de ejemplo no
+// tienen email, así que nunca calzan con una cuenta real.
 export const getMyOrders = async (email) => {
   const pedidos = readOrders()
     .filter((p) => p.cliente.email === email)
@@ -76,6 +77,10 @@ export const createOrder = async ({ cliente, entrega, items, total }) => {
   writeOrders(orders);
   return { data: { pedido } };
 };
+
+// Número de pedido corto para mostrar al usuario (el id interno es largo
+// y poco natural para un comprobante de compra).
+export const formatOrderId = (id) => id.replace(/^ord_/, "").slice(-6);
 
 export const updateOrderStatus = async (id, estado) => {
   const orders = readOrders();

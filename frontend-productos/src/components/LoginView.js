@@ -48,11 +48,6 @@ const LoginView = ({ onClose, onSwitch }) => {
 
       <div className="modal-body">
         {error && <div className="error-message">{error}</div>}
-        <div className="demo-hint">
-          Demo administrador: <strong>admin@apple.com</strong> / <strong>admin123</strong>
-          <br />
-          ¿Vienes a comprar? <strong>Regístrate</strong> como cliente abajo.
-        </div>
 
         <form className="login-form" onSubmit={handleSubmit}>
           <div className="input-group">

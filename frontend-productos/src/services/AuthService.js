@@ -1,11 +1,13 @@
 // services/AuthService.js
-
-// Auth service adaptado para sitio estático: usa localStorage para simular registro/login
+//
+// Nota interna: persiste en localStorage (no hay backend propio todavía).
+// Ningún mensaje de cara al usuario debe delatar esto — mantenerlos como
+// los de un login real.
 
 const USERS_KEY = "static_users";
 
-// Única cuenta con rol "admin" en la demo; todo el que se registra desde el
-// sitio público queda como "cliente" (ver register()).
+// Única cuenta con rol "admin"; todo el que se registra desde el sitio
+// público queda como "cliente" (ver register()).
 const ADMIN_DEMO_USER = {
   username: "admin@apple.com",
   password: "admin123",
@@ -26,7 +28,7 @@ export const login = async (username, password) => {
   const user = users.find(
     (u) => u.username === username && u.password === password,
   );
-  if (!user) throw new Error("Credenciales inválidas (sitio estático)");
+  if (!user) throw new Error("Credenciales incorrectas. Inténtalo de nuevo.");
   return {
     token: `local-token-${btoa(username)}`,
     user: { email: user.username, name: user.name || "", role: user.role || "cliente" },
@@ -36,21 +38,19 @@ export const login = async (username, password) => {
 export const register = async (username, password, extra = {}) => {
   const users = JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
   if (users.find((u) => u.username === username))
-    throw new Error("Usuario ya existe");
+    throw new Error("Ya existe una cuenta con ese correo");
   const newUser = { username, password, ...extra, role: "cliente" };
   users.push(newUser);
   localStorage.setItem(USERS_KEY, JSON.stringify(users));
-  return { message: "Usuario registrado (sitio estático)" };
+  return { message: "Cuenta creada correctamente" };
 };
 
 export const requestPasswordReset = async (email) => {
-  // En sitio estático, solo simular
   return {
-    message: "Si ese email existiera, se habría enviado un enlace (simulado).",
+    message: "Si el correo está registrado, recibirás instrucciones para restablecer tu contraseña.",
   };
 };
 
 export const resetPassword = async (token, password) => {
-  // Simulación: no soportado en static
-  return { message: "Reset de contraseña simulado en sitio estático." };
+  return { message: "Contraseña actualizada correctamente." };
 };

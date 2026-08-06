@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
-import { createOrder } from "../services/orderService";
+import { createOrder, formatOrderId } from "../services/orderService";
 import CartSummary from "../organisms/CartSummary";
 import CheckoutForm from "../organisms/CheckoutForm";
 import AuthModal from "../../components/modals/AuthModal";
@@ -39,7 +39,7 @@ const CarritoPage = () => {
         <div className="order-confirmation">
           <h2>¡Gracias, {confirmedOrder.cliente.nombre}!</h2>
           <p>
-            Tu pedido <strong>#{confirmedOrder.id}</strong> fue registrado.
+            Tu pedido <strong>#{formatOrderId(confirmedOrder.id)}</strong> fue registrado.
           </p>
           <p>
             {confirmedOrder.entrega.tipo === "delivery"

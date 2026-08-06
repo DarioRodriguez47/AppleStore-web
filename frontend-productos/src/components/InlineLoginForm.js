@@ -29,7 +29,7 @@ const InlineLoginForm = ({ title = "Inicia sesión", subtitle }) => {
     <div className="inline-login">
       <form className="inline-login-form" onSubmit={handleSubmit}>
         <h2>{title}</h2>
-        {subtitle && <p className="demo-hint">{subtitle}</p>}
+        {subtitle && <p className="form-hint">{subtitle}</p>}
         {error && <div className="checkout-error">{error}</div>}
         <input
           type="email"
@@ -48,7 +48,6 @@ const InlineLoginForm = ({ title = "Inicia sesión", subtitle }) => {
         <button type="submit" className="checkout-submit" disabled={loading}>
           {loading ? "Ingresando..." : "Ingresar"}
         </button>
-        <p className="demo-hint">Demo administrador: admin@apple.com / admin123</p>
       </form>
     </div>
   );
