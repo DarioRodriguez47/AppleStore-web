@@ -2,8 +2,10 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProductoList from "./components/ProductoList";
 import ProductoDetail from "./components/ProductoDetail";
-import ProductoEdit from "./components/ProductoEdit";
 import AppleProducts from "./components/ProductosApple";
+import CarritoPage from "./cart/pages/CarritoPage";
+import MisPedidosPage from "./cart/pages/MisPedidosPage";
+import AdminPage from "./admin/pages/AdminPage";
 import "./index.css"
 
 const App = () => {
@@ -13,7 +15,9 @@ const App = () => {
       <Route path="/" element={<Navigate to="/productos" />} />
       <Route path="/catalogo" element={<ProductoList />} />
       <Route path="/producto/:id" element={<ProductoDetail />} />
-      <Route path="/producto/editar/:id" element={<ProductoEdit />} />
+      <Route path="/carrito" element={<CarritoPage />} />
+      <Route path="/mis-pedidos" element={<MisPedidosPage />} />
+      <Route path="/admin" element={<AdminPage />} />
     </Routes>
   );
 };

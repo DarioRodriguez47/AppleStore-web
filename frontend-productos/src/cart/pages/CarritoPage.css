@@ -1,0 +1,60 @@
+.carrito-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+  min-height: 100vh;
+  background-color: #fafafa;
+}
+
+.carrito-title {
+  font-size: 32px;
+  font-weight: 600;
+  color: #1d1d1f;
+  margin: 16px 0 32px;
+}
+
+.carrito-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 800px) {
+  .carrito-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.order-confirmation {
+  max-width: 480px;
+  margin: 60px auto;
+  background: #fff;
+  border-radius: 16px;
+  padding: 40px;
+  text-align: center;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.order-confirmation h2 {
+  color: #1d1d1f;
+  margin-bottom: 16px;
+}
+
+.order-confirmation p {
+  color: #6e6e73;
+  margin-bottom: 8px;
+}
+
+.order-confirmation-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.order-confirmation .checkout-submit {
+  display: inline-block;
+  text-decoration: none;
+}

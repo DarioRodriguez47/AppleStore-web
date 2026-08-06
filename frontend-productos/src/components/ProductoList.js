@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { getProductos, deleteProducto, getImage } from '../services/productoService';
-import ProductoForm from './ProductoForm';
-import { useAuth } from '../context/AuthContext';
+import { getProductos, getImage } from '../services/productoService';
+import { useCart } from '../cart/context/CartContext';
 import './ProductoList.css';
 
 const ProductoList = () => {
   const [productos, setProductos] = useState([]);
-  const [showForm, setShowForm] = useState(false);
+  const [addedId, setAddedId] = useState(null);
   const navigate = useNavigate();
-  const { isAdmin } = useAuth();
+  const { addItem, totalItems } = useCart();
 
   useEffect(() => {
     fetchProductos();
@@ -20,13 +19,15 @@ const ProductoList = () => {
     setProductos(response.data.productos || []);
   };
 
-  const handleDelete = async (id) => {
-    await deleteProducto(id);
-    fetchProductos();
-  };
-
   const goToProduct = (id) => {
     navigate(`/producto/${id}`);
+  };
+
+  const handleAddToCart = (e, producto) => {
+    e.stopPropagation();
+    addItem(producto);
+    setAddedId(producto._id);
+    setTimeout(() => setAddedId(null), 1200);
   };
 
   return (
@@ -36,31 +37,11 @@ const ProductoList = () => {
           &larr; Volver a la tienda
         </Link>
         <h2 className="product-title">Catálogo</h2>
-        {isAdmin ? (
-          <button className="toggle-form-button" onClick={() => setShowForm((v) => !v)}>
-            {showForm ? "Cancelar" : "+ Añadir producto"}
-          </button>
-        ) : (
-          <span className="public-badge">Vista pública</span>
-        )}
+        <Link to="/carrito" className="toggle-form-button cart-link-with-badge">
+          Ver carrito
+          {totalItems > 0 && <span className="cart-count-badge">{totalItems}</span>}
+        </Link>
       </div>
-
-      {!isAdmin && (
-        <p className="admin-hint">
-          Inicia sesión como administrador para añadir, editar o eliminar productos.
-        </p>
-      )}
-
-      {isAdmin && showForm && (
-        <div className="product-form-wrapper">
-          <ProductoForm
-            fetchProductos={() => {
-              fetchProductos();
-              setShowForm(false);
-            }}
-          />
-        </div>
-      )}
 
       <ul className="product-grid">
         {productos.map((producto) => (
@@ -73,23 +54,18 @@ const ProductoList = () => {
               <span className="product-description">{producto.descripcion}</span>
               <span className="product-price">${producto.precio}</span>
             </div>
-            {isAdmin && (
-              <button
-                className="delete-button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDelete(producto._id);
-                }}
-              >
-                Eliminar
-              </button>
-            )}
+            <button
+              className="add-to-cart-button"
+              onClick={(e) => handleAddToCart(e, producto)}
+            >
+              {addedId === producto._id ? "Agregado ✓" : "Agregar al carrito"}
+            </button>
           </li>
         ))}
       </ul>
 
       {productos.length === 0 && (
-        <p className="empty-state">No hay productos todavía. ¡Añade el primero!</p>
+        <p className="empty-state">No hay productos disponibles por ahora.</p>
       )}
     </div>
   );

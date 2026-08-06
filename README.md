@@ -5,9 +5,14 @@ Demo pública: **https://DarioRodriguez47.github.io/AppleStore-web/**
 Este proyecto es una aplicación web dividida en dos partes principales:
 
 - **backend/**: API REST con Node.js, Express y MongoDB para la gestión de productos Apple y autenticación de usuarios. No está desplegado; queda disponible para desarrollo local o para una futura versión full-stack.
-- **frontend-productos/**: SPA en React. Es lo único que se despliega: corre como sitio estático (catálogo en JSON + `localStorage` para simular altas/ediciones/borrados y login), así que funciona sin necesitar el backend arriba.
+- **frontend-productos/**: SPA en React. Es lo único que se despliega: corre como sitio estático (catálogo en JSON + `localStorage` para simular altas/ediciones/borrados, login, carrito y pedidos), así que funciona sin necesitar el backend arriba.
 
 El despliegue a GitHub Pages es automático vía GitHub Actions en cada push a `main` (ver `.github/workflows/deploy.yml`).
+
+### Qué incluye la demo
+
+- Catálogo público con carrito de compra y checkout (nombre, teléfono, retiro en tienda o delivery).
+- Panel administrativo en `/admin` (o el enlace "Admin" del footer) para gestionar pedidos y productos — credencial de demo: `admin@apple.com` / `admin123`.
 
 Para entender cómo están organizadas las capas, el flujo de datos y las decisiones de diseño, ver **[ARCHITECTURE.md](ARCHITECTURE.md)**.
 

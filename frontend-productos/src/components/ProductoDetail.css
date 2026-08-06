@@ -57,7 +57,17 @@
   .detail-button:hover {
     background-color: #005bb5;
   }
-  
+
+  .detail-button:not(.detail-button-primary) {
+    background-color: transparent;
+    color: #007aff;
+    border: 1px solid #007aff;
+  }
+
+  .detail-button:not(.detail-button-primary):hover {
+    background-color: #f0f7ff;
+  }
+
   .loading {
     font-size: 18px;
     color: #555;

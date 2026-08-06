@@ -36,6 +36,8 @@
   padding: 10px 18px;
   font-size: 14px;
   cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
   transition: background-color 0.2s ease;
 }
 
@@ -43,23 +45,26 @@
   background-color: #06c;
 }
 
-.product-form-wrapper {
-  margin-bottom: 32px;
+.cart-link-with-badge {
+  position: relative;
 }
 
-.public-badge {
-  background-color: #f5f5f7;
-  color: #6e6e73;
-  border-radius: 20px;
-  padding: 8px 16px;
-  font-size: 13px;
-}
-
-.admin-hint {
-  text-align: center;
-  color: #6e6e73;
-  font-size: 13px;
-  margin: -16px 0 24px;
+.cart-count-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #ff3b30;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 10px;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  border: 2px solid #fafafa;
 }
 
 .product-grid {
@@ -122,22 +127,22 @@
   font-size: 16px;
 }
 
-.delete-button {
-  align-self: flex-start;
+.add-to-cart-button {
+  align-self: stretch;
   margin-top: 14px;
-  background-color: transparent;
-  color: #ff3b30;
-  border: 1px solid #ff3b30;
+  background-color: #0071e3;
+  color: #fff;
+  border: none;
   border-radius: 14px;
-  padding: 5px 12px;
-  font-size: 12px;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.2s ease;
 }
 
-.delete-button:hover {
-  background-color: #ff3b30;
-  color: #fff;
+.add-to-cart-button:hover {
+  background-color: #005bb5;
 }
 
 .empty-state {

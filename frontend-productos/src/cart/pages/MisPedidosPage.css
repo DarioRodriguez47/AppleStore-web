@@ -1,0 +1,26 @@
+.mis-pedidos-container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+  min-height: 100vh;
+  background-color: #fafafa;
+}
+
+.mis-pedidos-title {
+  font-size: 32px;
+  font-weight: 600;
+  color: #1d1d1f;
+  margin: 16px 0 32px;
+}
+
+.mis-pedidos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mis-pedidos-empty {
+  text-align: center;
+  color: #6e6e73;
+  margin-top: 60px;
+}

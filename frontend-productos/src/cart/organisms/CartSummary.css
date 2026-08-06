@@ -1,0 +1,26 @@
+.cart-summary {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.cart-empty {
+  text-align: center;
+  color: #6e6e73;
+  padding: 40px 0;
+}
+
+.cart-lines {
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20px;
+  font-size: 18px;
+  color: #1d1d1f;
+}

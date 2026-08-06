@@ -3,15 +3,16 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getProducto, getImage } from '../services/productoService';
-import { useAuth } from '../context/AuthContext';
+import { useCart } from '../cart/context/CartContext';
 import './ProductoDetail.css'; // Importar el archivo de estilos
 
 const ProductoDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { isAdmin } = useAuth();
+  const { addItem } = useCart();
   const [producto, setProducto] = useState(null);
   const [loaded, setLoaded] = useState(false);
+  const [added, setAdded] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -31,8 +32,10 @@ const ProductoDetail = () => {
     navigate('/catalogo');
   };
 
-  const handleEditClick = () => {
-    navigate(`/producto/editar/${id}`); // Navegar a la página de edición del producto
+  const handleAddToCart = () => {
+    addItem(producto);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1200);
   };
 
   if (!loaded) return <div className="loading">Cargando...</div>;
@@ -56,9 +59,9 @@ const ProductoDetail = () => {
       {producto.imagen && <img src={getImage(producto.imagen)} alt={producto.nombre} className="detail-image" />}
       <div className="detail-buttons">
         <button className="detail-button" onClick={handleBackClick}>Volver al Catálogo</button>
-        {isAdmin && (
-          <button className="detail-button" onClick={handleEditClick}>Editar Producto</button>
-        )}
+        <button className="detail-button detail-button-primary" onClick={handleAddToCart}>
+          {added ? "Agregado ✓" : "Agregar al carrito"}
+        </button>
       </div>
     </div>
   );

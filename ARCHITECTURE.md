@@ -34,18 +34,26 @@ React 18 + React Router 6, creado con Create React App (`react-scripts`).
 ```
 src/
   App.js                 Definición de rutas (única fuente de verdad del ruteo)
-  index.js                Bootstrap: BrowserRouter con basename = PUBLIC_URL
+  index.js                Bootstrap: BrowserRouter + AuthProvider + CartProvider
   components/
     ProductosApple.js      Landing (marketing) — hero, secciones por categoría, nav
-    ProductoList.js         Catálogo (/catalogo) — grid de productos + alta rápida
-    ProductoForm.js          Formulario de alta (se embebe dentro de ProductoList)
+    ProductoList.js         Catálogo público (/catalogo) — grid + "Agregar al carrito"
+    ProductoForm.js          Formulario de alta/edición (reutilizado por el admin)
     ProductoDetail.js        Detalle de un producto (/producto/:id)
-    ProductoEdit.js           Edición de un producto (/producto/editar/:id)
     LoginView.js / RegisterView.js / modals/   Autenticación (modal, sin backend real)
   services/
     productoService.js      Capa de datos del catálogo (ver abajo)
     AuthService.js            Capa de datos de autenticación (localStorage)
+  context/
+    AuthContext.js           Sesión (público vs. administrador)
+  cart/                      Feature carrito+checkout (ver más abajo)
+  admin/                     Feature panel administrativo (ver más abajo)
 ```
+
+Las carpetas `cart/` y `admin/` son las únicas organizadas con **atomic design**
+(atoms/molecules/organisms/pages) — se decidió aplicarlo solo al código nuevo
+y dejar el catálogo existente (`components/`) como está, para no arriesgar
+romper algo que ya funcionaba y estaba desplegado.
 
 **Capas y flujo de datos:** los componentes nunca hablan con `fetch`/`localStorage`
 directamente — todo pasa por `services/`. Esa es la costura pensada para poder
@@ -70,34 +78,98 @@ si mañana se apunta a `backend/`.
 ### Sesión y vistas (público vs. administrador)
 
 La app tiene una sola sesión (no hay un rol de "cliente" separado): **estar
-logueado equivale a poder administrar el catálogo**. Sin sesión, la app se ve
-en modo público (solo lectura).
+logueado equivale a ser administrador**, con su propia área separada en
+`/admin`. Sin sesión, la app se ve en modo público (catálogo + compra).
 
 ```
 context/AuthContext.js   Estado de sesión (usuario logueado o no), persistido
                           en localStorage. `isAdmin` = !!user.
 ```
 
-- **Vista pública (sin sesión):** navega el catálogo y ve el detalle de cada
-  producto, pero no ve los botones de añadir/editar/eliminar.
-- **Vista administrador (con sesión):** además de lo anterior, puede crear
-  productos (`/catalogo`), editarlos (`/producto/editar/:id`) y borrarlos.
-  Si alguien entra por URL directa a `/producto/editar/:id` sin sesión, se lo
-  redirige de vuelta al detalle.
+- **Vista pública (sin sesión):** navega el catálogo, ve el detalle de cada
+  producto, arma un carrito y completa una compra (ver sección Carrito).
+  No ve controles de gestión de inventario en ningún lado del sitio público.
+- **Vista administrador (`/admin`, con sesión):** área separada del sitio
+  público, con pestañas para gestionar **Pedidos** (ver estado, cambiarlo) y
+  **Productos** (crear, editar, borrar — el CRUD que antes vivía embebido en
+  `/catalogo`). Entrar a `/admin` sin sesión muestra un login dedicado en vez
+  del contenido.
 - **Credencial de demo** (sembrada automáticamente la primera vez que carga la
   app, ver `seedDemoAdmin` en `services/AuthService.js`):
-  `admin@apple.com` / `admin123`. También se muestra como pista dentro del
-  modal de login.
+  `admin@apple.com` / `admin123`. Se muestra como pista tanto en el modal de
+  login público como en el de `/admin`.
+- **Límite real de esta separación:** al ser un sitio 100% estático, "público
+  vs. administrador" es solo interfaz (oculta controles, redirige rutas) — no
+  hay backend que lo haga cumplir. Alguien con DevTools podría editar el
+  `localStorage` y saltárselo. No reemplaza autorización real del lado
+  servidor.
+
+### Carrito y checkout (`cart/`)
+
+```
+cart/
+  context/CartContext.js    Estado del carrito (localStorage), expone
+                             addItem/removeItem/updateQuantity/clearCart
+  services/orderService.js  Pedidos: createOrder/getOrders/getMyOrders/
+                             updateOrderStatus (localStorage, mismo patrón
+                             que productoService)
+  atoms/       QuantityStepper, StatusBadge — piezas mínimas sin lógica propia
+  molecules/   CartLineItem, OrderCard — una fila de carrito / una tarjeta de pedido
+  organisms/   CartSummary, CheckoutForm — bloques completos de UI
+  pages/       CarritoPage (/carrito), MisPedidosPage (/mis-pedidos)
+```
+
+Flujo: `ProductoList`/`ProductoDetail` llaman a `useCart().addItem(producto)`
+→ el nav muestra el contador → `/carrito` deja editar cantidades y pedir los
+datos de contacto y entrega (`CheckoutForm`) → al confirmar, `orderService.
+createOrder` guarda el pedido y el carrito se vacía. El pedido queda
+disponible de inmediato en `/admin` → Pedidos, y también en `/mis-pedidos`
+para quien lo hizo.
+
+**"Mis pedidos" vs. lo que ve el administrador:** como no hay cuentas de
+cliente reales, `getOrders()` (admin, ve todo) y `getMyOrders()` (visitante,
+solo lo suyo) son funciones distintas. `getMyOrders` filtra por una lista de
+ids guardada aparte (`mis_pedidos_ids`) que se llena solo cuando ESTE
+navegador completa un checkout — así el comprador no ve mezclados los
+pedidos de demo sembrados para el admin.
+
+Se siembran 2 pedidos de ejemplo la primera vez que carga la app (ver
+`seedDemoOrders` en `orderService.js`), visibles solo en `/admin` → Pedidos
+(no aparecen en `/mis-pedidos` de nadie), para que el panel de administrador
+no se vea vacío al grabar una demo.
+
+### Panel administrativo (`admin/`)
+
+```
+admin/
+  organisms/   AdminLoginForm, OrdersTable, ProductsAdminPanel
+  pages/       AdminPage (/admin) — pestañas Pedidos | Productos
+```
+
+`ProductsAdminPanel` reutiliza el `ProductoForm` y el `productoService` ya
+existentes (no duplica el CRUD); `OrdersTable` reutiliza los atoms de
+`cart/` (`StatusBadge`) para no repetir la lista de estados en dos lugares.
+
+**Cuidado con selectores de etiqueta global:** `components/AppleProducts.css`
+tiene reglas como `nav { position: fixed; ... }` y `header { height: calc(100vh
+- 44px); ... }` que aplican a **cualquier** `<nav>`/`<header>` de toda la app
+(el CSS no está scopeado por componente). Por eso en `cart/` y `admin/` se usan
+`<div>` en vez de `<nav>`/`<header>`/`<section>`/`<footer>` para el layout —
+usar esas etiquetas ahí rompe el layout heredando estilos pensados para la
+landing pública. Si se agrega una página nueva, evitar esas 4 etiquetas para
+contenedores de layout (usar `<div>` con una clase propia).
 
 ### Rutas
 
-| Ruta                     | Componente       | Qué hace                                   |
-|--------------------------|------------------|---------------------------------------------|
-| `/`                      | → redirige       | a `/productos`                               |
-| `/productos`             | `ProductosApple` | Landing con secciones por categoría          |
-| `/catalogo`              | `ProductoList`   | Grid de productos, alta y borrado            |
-| `/producto/:id`          | `ProductoDetail` | Ficha de un producto                         |
-| `/producto/editar/:id`   | `ProductoEdit`   | Edición de un producto                       |
+| Ruta              | Componente        | Qué hace                                            |
+|-------------------|--------------------|------------------------------------------------------|
+| `/`               | → redirige         | a `/productos`                                        |
+| `/productos`      | `ProductosApple`   | Landing con secciones por categoría                   |
+| `/catalogo`       | `ProductoList`     | Grid de productos público + "Agregar al carrito"      |
+| `/producto/:id`   | `ProductoDetail`   | Ficha de un producto + "Agregar al carrito"           |
+| `/carrito`        | `CarritoPage`      | Carrito + checkout (nombre, teléfono, retiro/delivery) |
+| `/mis-pedidos`    | `MisPedidosPage`   | Pedidos hechos desde este navegador (solo lectura)     |
+| `/admin`          | `AdminPage`        | Login si no hay sesión; si no, pestañas Pedidos/Productos |
 
 ### Cómo reconectar el backend
 
@@ -185,3 +257,14 @@ Puntos a tener en cuenta:
   prácticamente idénticas de una versión anterior en HTML/JS plano (previa a
   la SPA en React), que ya no se usaban para nada — quedaban solo como ruido.
   Si hace falta recuperarlas, están en el historial de git.
+- **Atomic design solo en `cart/` y `admin/`:** reestructurar todo `components/`
+  a atoms/molecules/organisms habría sido invasivo sobre código que ya
+  funciona y está desplegado, sin beneficio real para este trabajo. Se aplicó
+  la estructura al carrito/checkout y al panel admin (código nuevo, sin
+  usuarios dependiendo de su forma actual) para que sirva de referencia de
+  cómo escribir el resto del proyecto hacia adelante.
+- **Gestión de productos movida a `/admin`:** antes vivía embebida en
+  `/catalogo` (mostraba/ocultaba botones según sesión). Se separó en una
+  página propia para que `/catalogo` y `ProductoDetail` no necesiten saber
+  nada de `isAdmin` (una responsabilidad menos cada uno) y para que la
+  gestión de pedidos y productos esté en un solo lugar coherente.

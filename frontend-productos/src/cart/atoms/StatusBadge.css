@@ -1,0 +1,33 @@
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-pendiente {
+  background: #fff4e0;
+  color: #a35b00;
+}
+
+.status-en_preparacion {
+  background: #e6f0ff;
+  color: #0058cc;
+}
+
+.status-enviado {
+  background: #eee6ff;
+  color: #5e2fc7;
+}
+
+.status-entregado {
+  background: #e3f8e9;
+  color: #0a7a34;
+}
+
+.status-cancelado {
+  background: #fde8e8;
+  color: #c02929;
+}
