@@ -5,7 +5,7 @@ beforeEach(() => {
 });
 
 const baseOrder = {
-  cliente: { nombre: 'Ana', telefono: '0990000000' },
+  cliente: { nombre: 'Ana', telefono: '0990000000', email: 'ana@example.com' },
   entrega: { tipo: 'retiro' },
   items: [{ id: '1', nombre: 'iPhone', precio: 100, cantidad: 1 }],
   total: 100,
@@ -29,23 +29,22 @@ test('updateOrderStatus changes the stored status', async () => {
   expect(updated.estado).toBe('entregado');
 });
 
-test('getMyOrders only returns orders created from this browser', async () => {
-  // Simula un pedido de "otro" (por ejemplo, seedDemoOrders) que no debería
-  // aparecer en "mis pedidos" aunque esté en el almacenamiento global.
+test('getMyOrders only returns orders belonging to that email', async () => {
+  // Simula un pedido de demo sin email (los que ve el admin) y uno de otra
+  // cuenta: ninguno debería aparecer en "mis pedidos" de ana@example.com.
   localStorage.setItem(
     'pedidos',
     JSON.stringify([
       { id: 'demo-999', fecha: '2026-01-01T00:00:00.000Z', cliente: {}, entrega: {}, items: [], total: 0, estado: 'pendiente' },
     ]),
   );
+  await createOrder({ ...baseOrder, cliente: { nombre: 'Otro', telefono: '000', email: 'otro@example.com' } });
 
   const { data } = await createOrder(baseOrder);
 
-  const { data: mineData } = await getMyOrders();
+  const { data: mineData } = await getMyOrders('ana@example.com');
   expect(mineData.pedidos.map((p) => p.id)).toEqual([data.pedido.id]);
 
   const { data: allData } = await getOrders();
-  expect(allData.pedidos.map((p) => p.id).sort()).toEqual(
-    ['demo-999', data.pedido.id].sort(),
-  );
+  expect(allData.pedidos).toHaveLength(3);
 });

@@ -1,18 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import { getMyOrders } from "../services/orderService";
 import OrderCard from "../molecules/OrderCard";
+import InlineLoginForm from "../../components/InlineLoginForm";
 import "./MisPedidosPage.css";
 
-// Como no hay cuentas de cliente reales (solo la sesión de administrador),
-// "mis pedidos" son los pedidos hechos desde este navegador (no los de demo
-// que ve el administrador).
+// "Mis pedidos" son los pedidos hechos por la cuenta logueada (por email),
+// no los de demo que ve el administrador.
 const MisPedidosPage = () => {
+  const { user } = useAuth();
   const [pedidos, setPedidos] = useState(null);
 
   useEffect(() => {
-    getMyOrders().then((response) => setPedidos(response.data.pedidos));
-  }, []);
+    if (!user) return;
+    getMyOrders(user.email).then((response) => setPedidos(response.data.pedidos));
+  }, [user]);
+
+  if (!user) {
+    return (
+      <InlineLoginForm
+        title="Inicia sesión"
+        subtitle="Inicia sesión para ver tus pedidos."
+      />
+    );
+  }
 
   return (
     <div className="mis-pedidos-container">

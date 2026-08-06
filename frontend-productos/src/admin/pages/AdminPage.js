@@ -1,17 +1,33 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import AdminLoginForm from "../organisms/AdminLoginForm";
+import InlineLoginForm from "../../components/InlineLoginForm";
 import OrdersTable from "../organisms/OrdersTable";
 import ProductsAdminPanel from "../organisms/ProductsAdminPanel";
 import "./AdminPage.css";
 
 const AdminPage = () => {
-  const { isAdmin, user, logout } = useAuth();
+  const { user, isAdmin, logout } = useAuth();
   const [tab, setTab] = useState("pedidos");
 
+  if (!user) {
+    return <InlineLoginForm title="Acceso administrador" />;
+  }
+
   if (!isAdmin) {
-    return <AdminLoginForm />;
+    return (
+      <div className="inline-login">
+        <div className="inline-login-form">
+          <h2>Sin acceso</h2>
+          <p className="demo-hint">
+            Tu cuenta ({user.email}) no tiene permisos de administrador.
+          </p>
+          <Link to="/catalogo" className="checkout-submit">
+            Volver a la tienda
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   return (

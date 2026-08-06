@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
-const LoginView = ({ onClose, onSwitch, notice }) => {
+const LoginView = ({ onClose, onSwitch }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,9 +18,11 @@ const LoginView = ({ onClose, onSwitch, notice }) => {
     setLoading(true);
 
     try {
-      await login(email, password);
+      const loggedUser = await login(email, password);
       onClose();
-      navigate("/");
+      // El admin va directo a su panel; un cliente se queda donde estaba
+      // (por ejemplo, retomando el checkout en /carrito).
+      if (loggedUser.role === "admin") navigate("/admin");
     } catch (err) {
       setError(err.message || "Credenciales incorrectas. Inténtalo de nuevo.");
     } finally {
@@ -45,10 +47,11 @@ const LoginView = ({ onClose, onSwitch, notice }) => {
       </div>
 
       <div className="modal-body">
-        {notice && <div className="success-message">{notice}</div>}
         {error && <div className="error-message">{error}</div>}
         <div className="demo-hint">
           Demo administrador: <strong>admin@apple.com</strong> / <strong>admin123</strong>
+          <br />
+          ¿Vienes a comprar? <strong>Regístrate</strong> como cliente abajo.
         </div>
 
         <form className="login-form" onSubmit={handleSubmit}>

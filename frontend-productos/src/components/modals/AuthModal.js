@@ -7,7 +7,6 @@ import ForgotPasswordView from "./ForgotPasswordView";
 
 const AuthModal = ({ initialView = "login", onClose }) => {
   const [view, setView] = useState(initialView); // 'login' | 'register' | 'forgot'
-  const [notice, setNotice] = useState("");
 
   // Deshabilitar scroll del body al abrir el modal
   useEffect(() => {
@@ -30,11 +29,6 @@ const AuthModal = ({ initialView = "login", onClose }) => {
     if (e.target === e.currentTarget) onClose();
   };
 
-  const handleRegisterSuccess = (message) => {
-    setNotice(message || "Registro exitoso. Inicia sesión.");
-    setView("login");
-  };
-
   return (
     <div className="login-overlay" onClick={handleOverlayClick}>
       <div
@@ -51,20 +45,10 @@ const AuthModal = ({ initialView = "login", onClose }) => {
           ×
         </button>
         {view === "login" && (
-          <LoginView
-            onClose={onClose}
-            onSwitch={(v) => {
-              setView(v);
-              setNotice("");
-            }}
-            notice={notice}
-          />
+          <LoginView onClose={onClose} onSwitch={(v) => setView(v)} />
         )}
         {view === "register" && (
-          <RegisterView
-            onSwitch={(v) => setView(v)}
-            onRegistered={handleRegisterSuccess}
-          />
+          <RegisterView onSwitch={(v) => setView(v)} onClose={onClose} />
         )}
         {view === "forgot" && (
           <ForgotPasswordView onSwitch={(v) => setView(v)} />

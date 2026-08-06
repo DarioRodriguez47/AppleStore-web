@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getProductos, deleteProducto, getImage } from "../../services/productoService";
-import ProductoForm from "../../components/ProductoForm";
+import ProductFormModal from "./ProductFormModal";
 import "./ProductsAdminPanel.css";
 
 const ProductsAdminPanel = () => {
@@ -34,7 +34,7 @@ const ProductsAdminPanel = () => {
 
   const startCreate = () => {
     setEditing(null);
-    setShowForm((v) => !v);
+    setShowForm(true);
   };
 
   return (
@@ -45,22 +45,20 @@ const ProductsAdminPanel = () => {
           <span className="products-admin-count">{productos.length} en el catálogo</span>
         </div>
         <button className="toggle-form-button" onClick={startCreate}>
-          {showForm && !editing ? "Cancelar" : "+ Añadir producto"}
+          + Añadir producto
         </button>
       </div>
 
       {showForm && (
-        <div className="products-admin-form">
-          <h4>{editing ? `Editar: ${editing.nombre}` : "Nuevo producto"}</h4>
-          <ProductoForm
-            producto={editing}
-            isEdit={!!editing}
-            fetchProductos={() => {
-              fetchProductos();
-              closeForm();
-            }}
-          />
-        </div>
+        <ProductFormModal
+          producto={editing}
+          isEdit={!!editing}
+          onClose={closeForm}
+          fetchProductos={() => {
+            fetchProductos();
+            closeForm();
+          }}
+        />
       )}
 
       {productos.length === 0 ? (

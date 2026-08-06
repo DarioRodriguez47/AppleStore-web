@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { register } from "../services/AuthService";
+import { useAuth } from "../context/AuthContext";
 
-const RegisterView = ({ onSwitch, onRegistered }) => {
+const RegisterView = ({ onSwitch, onRegistered, onClose }) => {
+  const { login } = useAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,7 +21,10 @@ const RegisterView = ({ onSwitch, onRegistered }) => {
     setLoading(true);
     try {
       await register(email, password, { name });
-      onRegistered("Registro exitoso. Ya puedes iniciar sesión.");
+      // Entra directo comprando: se loguea automáticamente en vez de
+      // pedirle que vuelva a escribir sus credenciales.
+      await login(email, password);
+      onClose?.();
     } catch (err) {
       setError(err.message || "Error al registrarse");
     } finally {
@@ -32,7 +37,7 @@ const RegisterView = ({ onSwitch, onRegistered }) => {
       <div className="modal-header">
         <div className="logo-icon"></div>
         <h2>Crear cuenta</h2>
-        <p className="modal-subtitle">Regístrate para acceder al panel</p>
+        <p className="modal-subtitle">Regístrate para comprar en la tienda</p>
       </div>
 
       <div className="modal-body">

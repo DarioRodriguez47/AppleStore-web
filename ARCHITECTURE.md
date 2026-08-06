@@ -41,11 +41,13 @@ src/
     ProductoForm.js          Formulario de alta/edición (reutilizado por el admin)
     ProductoDetail.js        Detalle de un producto (/producto/:id)
     LoginView.js / RegisterView.js / modals/   Autenticación (modal, sin backend real)
+    InlineLoginForm.js       Login de página completa (no modal), reutilizado
+                              por /admin y /mis-pedidos, cada uno con su título
   services/
     productoService.js      Capa de datos del catálogo (ver abajo)
     AuthService.js            Capa de datos de autenticación (localStorage)
   context/
-    AuthContext.js           Sesión (público vs. administrador)
+    AuthContext.js           Sesión + rol (cliente vs. administrador)
   cart/                      Feature carrito+checkout (ver más abajo)
   admin/                     Feature panel administrativo (ver más abajo)
 ```
@@ -75,34 +77,45 @@ sin backend. Todas las funciones devuelven `{ data: { producto(s) } }`, el mismo
 shape que devolvería la API real — por eso los componentes no necesitan cambiar
 si mañana se apunta a `backend/`.
 
-### Sesión y vistas (público vs. administrador)
+### Sesión y roles (cliente vs. administrador)
 
-La app tiene una sola sesión (no hay un rol de "cliente" separado): **estar
-logueado equivale a ser administrador**, con su propia área separada en
-`/admin`. Sin sesión, la app se ve en modo público (catálogo + compra).
+Hay dos roles reales, guardados en el registro del usuario (`role` en
+`static_users`, ver `services/AuthService.js`):
 
 ```
-context/AuthContext.js   Estado de sesión (usuario logueado o no), persistido
-                          en localStorage. `isAdmin` = !!user.
+context/AuthContext.js   Estado de sesión: { email, role }, persistido en
+                          localStorage. isAdmin = role === "admin",
+                          isCliente = role === "cliente".
 ```
 
-- **Vista pública (sin sesión):** navega el catálogo, ve el detalle de cada
-  producto, arma un carrito y completa una compra (ver sección Carrito).
-  No ve controles de gestión de inventario en ningún lado del sitio público.
-- **Vista administrador (`/admin`, con sesión):** área separada del sitio
+- **`admin`**: solo la cuenta de demo sembrada (`seedDemoAdmin`). Administra
+  pedidos y productos en `/admin`.
+- **`cliente`**: cualquiera que se registra desde el modal público
+  (`RegisterView`) — es el rol por defecto, no se puede auto-asignar `admin`
+  desde el formulario. Necesita esta cuenta para completar una compra.
+
+Flujo típico de un comprador: navega el catálogo sin sesión → arma su
+carrito → en `/carrito`, si no hay sesión, se le pide iniciar sesión o
+registrarse (`RegisterView` hace login automático al registrarse, para no
+pedirle las credenciales dos veces) → completa el checkout → puede ver el
+pedido en `/mis-pedidos`.
+
+- **Vista pública (sin sesión):** navega el catálogo y arma un carrito
+  libremente; recién necesita cuenta al momento de pagar. No ve controles de
+  gestión de inventario en ningún lado del sitio público.
+- **Vista administrador (`/admin`, rol `admin`):** área separada del sitio
   público, con pestañas para gestionar **Pedidos** (ver estado, cambiarlo) y
-  **Productos** (crear, editar, borrar — el CRUD que antes vivía embebido en
-  `/catalogo`). Entrar a `/admin` sin sesión muestra un login dedicado en vez
-  del contenido.
+  **Productos** (crear, editar, borrar). Sin sesión muestra un login
+  (`InlineLoginForm`); con sesión pero rol `cliente`, muestra un mensaje de
+  "sin acceso" en vez del panel.
 - **Credencial de demo** (sembrada automáticamente la primera vez que carga la
   app, ver `seedDemoAdmin` en `services/AuthService.js`):
-  `admin@apple.com` / `admin123`. Se muestra como pista tanto en el modal de
-  login público como en el de `/admin`.
-- **Límite real de esta separación:** al ser un sitio 100% estático, "público
-  vs. administrador" es solo interfaz (oculta controles, redirige rutas) — no
-  hay backend que lo haga cumplir. Alguien con DevTools podría editar el
-  `localStorage` y saltárselo. No reemplaza autorización real del lado
-  servidor.
+  `admin@apple.com` / `admin123`. Se muestra como pista en el modal de login
+  público.
+- **Límite real de esta separación:** al ser un sitio 100% estático, el rol
+  vive en `localStorage` — no hay backend que lo haga cumplir. Alguien con
+  DevTools podría editar su propio registro y ponerse `role: "admin"`. No
+  reemplaza autorización real del lado servidor.
 
 ### Carrito y checkout (`cart/`)
 
@@ -126,12 +139,11 @@ createOrder` guarda el pedido y el carrito se vacía. El pedido queda
 disponible de inmediato en `/admin` → Pedidos, y también en `/mis-pedidos`
 para quien lo hizo.
 
-**"Mis pedidos" vs. lo que ve el administrador:** como no hay cuentas de
-cliente reales, `getOrders()` (admin, ve todo) y `getMyOrders()` (visitante,
-solo lo suyo) son funciones distintas. `getMyOrders` filtra por una lista de
-ids guardada aparte (`mis_pedidos_ids`) que se llena solo cuando ESTE
-navegador completa un checkout — así el comprador no ve mezclados los
-pedidos de demo sembrados para el admin.
+**"Mis pedidos" vs. lo que ve el administrador:** `getOrders()` (admin, ve
+todo) y `getMyOrders(email)` (cliente, solo lo suyo) son funciones distintas.
+`getMyOrders` filtra por `cliente.email`, que se llena con el email de la
+cuenta logueada al momento del checkout — los pedidos de demo no tienen
+`email`, así que nunca calzan con ninguna cuenta real.
 
 Se siembran 2 pedidos de ejemplo la primera vez que carga la app (ver
 `seedDemoOrders` en `orderService.js`), visibles solo en `/admin` → Pedidos
@@ -142,9 +154,14 @@ no se vea vacío al grabar una demo.
 
 ```
 admin/
-  organisms/   AdminLoginForm, OrdersTable, ProductsAdminPanel
+  organisms/   OrdersTable, ProductsAdminPanel, ProductFormModal
   pages/       AdminPage (/admin) — pestañas Pedidos | Productos
 ```
+
+El login de `/admin` usa el `InlineLoginForm` compartido (en `components/`),
+no uno propio — así `cart/` y `admin/` dependen ambos de una pieza común en
+vez de que uno dependa del otro. `ProductFormModal` abre el `ProductoForm`
+como modal (overlay), no embebido en la página, para crear/editar productos.
 
 `ProductsAdminPanel` reutiliza el `ProductoForm` y el `productoService` ya
 existentes (no duplica el CRUD); `OrdersTable` reutiliza los atoms de
@@ -167,9 +184,9 @@ contenedores de layout (usar `<div>` con una clase propia).
 | `/productos`      | `ProductosApple`   | Landing con secciones por categoría                   |
 | `/catalogo`       | `ProductoList`     | Grid de productos público + "Agregar al carrito"      |
 | `/producto/:id`   | `ProductoDetail`   | Ficha de un producto + "Agregar al carrito"           |
-| `/carrito`        | `CarritoPage`      | Carrito + checkout (nombre, teléfono, retiro/delivery) |
-| `/mis-pedidos`    | `MisPedidosPage`   | Pedidos hechos desde este navegador (solo lectura)     |
-| `/admin`          | `AdminPage`        | Login si no hay sesión; si no, pestañas Pedidos/Productos |
+| `/carrito`        | `CarritoPage`      | Carrito; el checkout pide iniciar sesión/registrarse    |
+| `/mis-pedidos`    | `MisPedidosPage`   | Pedidos de la cuenta logueada (solo lectura)            |
+| `/admin`          | `AdminPage`        | Login si no hay sesión, "sin acceso" si no es admin, si no pestañas Pedidos/Productos |
 
 ### Cómo reconectar el backend
 

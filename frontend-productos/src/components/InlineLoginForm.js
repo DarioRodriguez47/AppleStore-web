@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import { useAuth } from "../../context/AuthContext";
-import "./AdminLoginForm.css";
+import { useAuth } from "../context/AuthContext";
+import "./InlineLoginForm.css";
 
-const AdminLoginForm = () => {
+// Formulario de login de página completa (no modal), reutilizado por
+// cualquier vista que necesite una sesión para mostrar su contenido
+// (por ejemplo /admin o /mis-pedidos), cada una con su propio título.
+const InlineLoginForm = ({ title = "Inicia sesión", subtitle }) => {
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,9 +26,10 @@ const AdminLoginForm = () => {
   };
 
   return (
-    <div className="admin-login">
-      <form className="admin-login-form" onSubmit={handleSubmit}>
-        <h2>Acceso administrador</h2>
+    <div className="inline-login">
+      <form className="inline-login-form" onSubmit={handleSubmit}>
+        <h2>{title}</h2>
+        {subtitle && <p className="demo-hint">{subtitle}</p>}
         {error && <div className="checkout-error">{error}</div>}
         <input
           type="email"
@@ -44,10 +48,10 @@ const AdminLoginForm = () => {
         <button type="submit" className="checkout-submit" disabled={loading}>
           {loading ? "Ingresando..." : "Ingresar"}
         </button>
-        <p className="demo-hint">Demo: admin@apple.com / admin123</p>
+        <p className="demo-hint">Demo administrador: admin@apple.com / admin123</p>
       </form>
     </div>
   );
 };
 
-export default AdminLoginForm;
+export default InlineLoginForm;

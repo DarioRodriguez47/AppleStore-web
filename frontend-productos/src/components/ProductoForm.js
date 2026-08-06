@@ -1,10 +1,10 @@
 // components/ProductoForm.js
 
 import React, { useState } from 'react';
-import { saveProducto, updateProducto } from '../services/productoService';
+import { saveProducto, updateProducto, getImage } from '../services/productoService';
 import './ProductoForm.css';
 
-const ProductoForm = ({ producto, isEdit, fetchProductos }) => {
+const ProductoForm = ({ producto, isEdit, fetchProductos, onCancel }) => {
   const [formData, setFormData] = useState({
     nombre: producto?.nombre || '',
     descripcion: producto?.descripcion || '',
@@ -38,60 +38,107 @@ const ProductoForm = ({ producto, isEdit, fetchProductos }) => {
     fetchProductos();
   };
 
+  const previewSrc = formData.imagen?.startsWith("data:")
+    ? formData.imagen
+    : formData.imagen
+      ? getImage(formData.imagen)
+      : null;
+
   return (
     <form onSubmit={handleSubmit} className="product-form">
-      <input 
-        type="text" 
-        name="nombre" 
-        value={formData.nombre} 
-        onChange={handleChange} 
-        placeholder="Nombre" 
-        className="form-input" 
-      />
-      <input 
-        type="text" 
-        name="descripcion" 
-        value={formData.descripcion} 
-        onChange={handleChange} 
-        placeholder="Descripción" 
-        className="form-input" 
-      />
-      <input 
-        type="text" 
-        name="edicion" 
-        value={formData.edicion} 
-        onChange={handleChange} 
-        placeholder="Edición" 
-        className="form-input" 
-      />
-      <input 
-        type="number" 
-        name="anio" 
-        value={formData.anio} 
-        onChange={handleChange} 
-        placeholder="Año" 
-        className="form-input" 
-      />
-      <input 
-        type="number" 
-        name="precio" 
-        value={formData.precio} 
-        onChange={handleChange} 
-        placeholder="Precio" 
-        className="form-input" 
-      />
-      <input 
-        type="file" 
-        name="imagen" 
-        onChange={handleImageChange} 
-        className="form-input" 
-      />
-      <button 
-        type="submit" 
-        className="submit-button"
-      >
-        Guardar
-      </button>
+      <div className="form-field">
+        <label htmlFor="nombre">Nombre</label>
+        <input
+          id="nombre"
+          type="text"
+          name="nombre"
+          value={formData.nombre}
+          onChange={handleChange}
+          placeholder="iPhone 15 Pro"
+          className="form-input"
+          required
+        />
+      </div>
+
+      <div className="form-field">
+        <label htmlFor="descripcion">Descripción</label>
+        <input
+          id="descripcion"
+          type="text"
+          name="descripcion"
+          value={formData.descripcion}
+          onChange={handleChange}
+          placeholder="Chasis de titanio, chip A17 Pro..."
+          className="form-input"
+          required
+        />
+      </div>
+
+      <div className="form-row">
+        <div className="form-field">
+          <label htmlFor="edicion">Edición</label>
+          <input
+            id="edicion"
+            type="text"
+            name="edicion"
+            value={formData.edicion}
+            onChange={handleChange}
+            placeholder="Pro"
+            className="form-input"
+          />
+        </div>
+        <div className="form-field">
+          <label htmlFor="anio">Año</label>
+          <input
+            id="anio"
+            type="number"
+            name="anio"
+            value={formData.anio}
+            onChange={handleChange}
+            placeholder="2024"
+            className="form-input"
+          />
+        </div>
+        <div className="form-field">
+          <label htmlFor="precio">Precio (USD)</label>
+          <input
+            id="precio"
+            type="number"
+            name="precio"
+            value={formData.precio}
+            onChange={handleChange}
+            placeholder="999"
+            className="form-input"
+            required
+          />
+        </div>
+      </div>
+
+      <div className="form-field">
+        <label htmlFor="imagen">Imagen</label>
+        <div className="image-field">
+          {previewSrc && <img src={previewSrc} alt="Vista previa" className="image-preview" />}
+          <input
+            id="imagen"
+            type="file"
+            name="imagen"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="form-input"
+          />
+        </div>
+      </div>
+
+      <div className="form-actions">
+        <button type="submit" className="submit-button">
+          {isEdit ? "Guardar cambios" : "Crear producto"}
+        </button>
+        {onCancel && (
+          <button type="button" className="cancel-button" onClick={onCancel}>
+            Cancelar
+          </button>
+        )}
+      </div>
     </form>
   );
 };

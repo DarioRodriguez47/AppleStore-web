@@ -1,4 +1,4 @@
-.admin-login {
+.inline-login {
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -6,7 +6,7 @@
   background-color: #1d1d1f;
 }
 
-.admin-login-form {
+.inline-login-form {
   width: 100%;
   max-width: 360px;
   background: #fff;
@@ -17,13 +17,13 @@
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
 }
 
-.admin-login-form h2 {
+.inline-login-form h2 {
   text-align: center;
   color: #1d1d1f;
   margin-bottom: 20px;
 }
 
-.admin-login-form input {
+.inline-login-form input {
   padding: 12px;
   border: 1px solid #e1e1e1;
   border-radius: 8px;

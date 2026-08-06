@@ -16,11 +16,9 @@ import imagen9 from "../img/image9.jpg";
 import { useState } from "react";
 import { AuthModal } from "./modals";
 import { useAuth } from "../context/AuthContext";
-import { useCart } from "../cart/context/CartContext";
 const AppleProducts = () => {
   const [showLogin, setShowLogin] = useState(false);
   const { user, isAdmin, logout } = useAuth();
-  const { totalItems } = useCart();
 
   const handleLoginClick = () => {
     setShowLogin(true);
@@ -48,14 +46,13 @@ const AppleProducts = () => {
           <button type="button" className="nav-icon-button" aria-label="Buscar">
             <span className="fas fa-search"></span>
           </button>
-          <Link to="/carrito" className="nav-cart-link" aria-label="Carrito">
-            🛒
-            {totalItems > 0 && <span className="nav-cart-badge">{totalItems}</span>}
-          </Link>
-          {isAdmin ? (
+          {user ? (
             <div className="nav-session">
-              <Link to="/admin" className="nav-session-label">
-                Admin: {user.email}
+              <Link
+                to={isAdmin ? "/admin" : "/mis-pedidos"}
+                className="nav-session-label"
+              >
+                {isAdmin ? `Admin: ${user.email}` : `Hola, ${user.name || user.email}`}
               </Link>
               <button className="nav-login-button" onClick={logout}>
                 Cerrar sesión

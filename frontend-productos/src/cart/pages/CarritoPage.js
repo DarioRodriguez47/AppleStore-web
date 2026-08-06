@@ -1,20 +1,24 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { useAuth } from "../../context/AuthContext";
 import { createOrder } from "../services/orderService";
 import CartSummary from "../organisms/CartSummary";
 import CheckoutForm from "../organisms/CheckoutForm";
+import AuthModal from "../../components/modals/AuthModal";
 import "./CarritoPage.css";
 
 const CarritoPage = () => {
   const { items, updateQuantity, removeItem, totalPrice, clearCart } = useCart();
+  const { user } = useAuth();
   const [submitting, setSubmitting] = useState(false);
   const [confirmedOrder, setConfirmedOrder] = useState(null);
+  const [showAuth, setShowAuth] = useState(false);
 
   const handleCheckout = async ({ cliente, entrega }) => {
     setSubmitting(true);
     const response = await createOrder({
-      cliente,
+      cliente: { ...cliente, email: user.email },
       entrega,
       items: items.map(({ id, nombre, precio, cantidad }) => ({
         id,
@@ -69,9 +73,23 @@ const CarritoPage = () => {
           total={totalPrice}
         />
         {items.length > 0 && (
-          <CheckoutForm onSubmit={handleCheckout} submitting={submitting} />
+          user ? (
+            <CheckoutForm onSubmit={handleCheckout} submitting={submitting} />
+          ) : (
+            <div className="checkout-form login-required">
+              <h3>Inicia sesión para comprar</h3>
+              <p>Regístrate o inicia sesión para completar tu pedido.</p>
+              <button className="checkout-submit" onClick={() => setShowAuth(true)}>
+                Iniciar sesión / Registrarme
+              </button>
+            </div>
+          )
         )}
       </div>
+
+      {showAuth && (
+        <AuthModal initialView="register" onClose={() => setShowAuth(false)} />
+      )}
     </div>
   );
 };

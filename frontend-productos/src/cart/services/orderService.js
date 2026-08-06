@@ -1,10 +1,6 @@
 // Servicio de pedidos: mismo patrón que productoService (localStorage a modo
 // de "backend"), para que el checkout se sienta completo sin servidor real.
 const ORDERS_KEY = "pedidos";
-// No hay cuentas de cliente reales, así que "mis pedidos" se rastrea aparte:
-// solo los ids de pedidos creados desde este navegador, para no mezclarlos
-// con los pedidos de demo que ve el administrador.
-const MY_ORDERS_KEY = "mis_pedidos_ids";
 
 export const ESTADOS_PEDIDO = [
   "pendiente",
@@ -20,6 +16,8 @@ const seedDemoOrders = () => {
     {
       id: "demo-1001",
       fecha: "2026-08-01T15:20:00.000Z",
+      // Sin "email": son pedidos de demo para el admin, no de una cuenta
+      // real, así que nunca deben aparecer en "mis pedidos" de nadie.
       cliente: { nombre: "Valentina Cruz", telefono: "0991234567" },
       entrega: { tipo: "delivery", direccion: "Av. Amazonas N34-120, Quito" },
       items: [
@@ -47,9 +45,6 @@ const readOrders = () => JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]");
 const writeOrders = (orders) =>
   localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
 
-const getMyOrderIds = () =>
-  JSON.parse(localStorage.getItem(MY_ORDERS_KEY) || "[]");
-
 export const getOrders = async () => {
   const pedidos = [...readOrders()].sort(
     (a, b) => new Date(b.fecha) - new Date(a.fecha),
@@ -57,12 +52,11 @@ export const getOrders = async () => {
   return { data: { pedidos } };
 };
 
-// Solo los pedidos hechos desde este navegador (excluye los de demo que ve
-// el administrador, que no fueron creados por quien está mirando la tienda).
-export const getMyOrders = async () => {
-  const myIds = getMyOrderIds();
+// Pedidos de la cuenta logueada (por email). Los pedidos de demo no tienen
+// email, así que nunca calzan con una cuenta real.
+export const getMyOrders = async (email) => {
   const pedidos = readOrders()
-    .filter((p) => myIds.includes(p.id))
+    .filter((p) => p.cliente.email === email)
     .sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
   return { data: { pedidos } };
 };
@@ -80,11 +74,6 @@ export const createOrder = async ({ cliente, entrega, items, total }) => {
   const orders = readOrders();
   orders.push(pedido);
   writeOrders(orders);
-
-  const myIds = getMyOrderIds();
-  myIds.push(pedido.id);
-  localStorage.setItem(MY_ORDERS_KEY, JSON.stringify(myIds));
-
   return { data: { pedido } };
 };
 

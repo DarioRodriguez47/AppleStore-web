@@ -5,9 +5,9 @@ const USER_KEY = "auth_user";
 
 const AuthContext = createContext(null);
 
-// En esta demo no hay un rol de "cliente" separado: cualquier sesión iniciada
-// puede administrar el catálogo (crear/editar/borrar). Sin sesión, la app se
-// muestra en modo público (solo lectura).
+// Dos roles: "admin" (administra el catálogo y los pedidos) y "cliente"
+// (compra en la tienda). Quien se registra desde el sitio público siempre
+// queda como "cliente"; la única cuenta "admin" es la sembrada por demo.
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
     const stored = localStorage.getItem(USER_KEY);
@@ -15,10 +15,10 @@ export const AuthProvider = ({ children }) => {
   });
 
   const login = async (email, password) => {
-    await loginService(email, password);
-    const loggedUser = { email };
-    localStorage.setItem(USER_KEY, JSON.stringify(loggedUser));
-    setUser(loggedUser);
+    const response = await loginService(email, password);
+    localStorage.setItem(USER_KEY, JSON.stringify(response.user));
+    setUser(response.user);
+    return response.user;
   };
 
   const logout = () => {
@@ -27,7 +27,15 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAdmin: !!user, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isAdmin: user?.role === "admin",
+        isCliente: user?.role === "cliente",
+        login,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
