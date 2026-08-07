@@ -1,8 +1,8 @@
 # Apple Catalog Manager
 
 Demo pública:
+- Vercel: **https://applestore-shop.vercel.app**
 - GitHub Pages: **https://DarioRodriguez47.github.io/AppleStore-web/**
-- Vercel: **https://frontend-productos-one.vercel.app**
 
 Este proyecto es una aplicación web dividida en dos partes principales:
 
