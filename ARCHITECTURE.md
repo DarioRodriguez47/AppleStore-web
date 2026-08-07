@@ -39,7 +39,8 @@ src/
     ProductosApple.js      Landing (marketing) — hero, secciones por categoría, nav
     ProductoList.js         Catálogo público (/catalogo) — grid + "Agregar al carrito"
     ProductoForm.js          Formulario de alta/edición (reutilizado por el admin)
-    ProductoDetail.js        Detalle de un producto (/producto/:id)
+    ProductQuickViewModal.js  Vista rápida de un producto (imagen + características),
+                              se abre sobre /catalogo — no hay página de detalle aparte
     LoginView.js / RegisterView.js / modals/   Autenticación (modal, sin backend real)
     InlineLoginForm.js       Login de página completa (no modal), reutilizado
                               por /admin y /mis-pedidos, cada uno con su título
@@ -62,7 +63,7 @@ directamente — todo pasa por `services/`. Esa es la costura pensada para poder
 cambiar el modo demo por el modo full-stack sin tocar los componentes.
 
 ```
-Componente (ProductoList, ProductoDetail, ...)
+Componente (ProductoList, ProductQuickViewModal, ...)
         │  llama a
         ▼
 services/productoService.js   <-- única capa que sabe de dónde vienen los datos
@@ -137,7 +138,7 @@ cart/
                 TrackOrderPage (/rastrear-pedido)
 ```
 
-Flujo: `ProductoList`/`ProductoDetail` llaman a `useCart().addItem(producto)`
+Flujo: `ProductoList`/`ProductQuickViewModal` llaman a `useCart().addItem(producto)`
 → el nav muestra el contador → `/carrito` deja editar cantidades y pedir los
 datos de contacto y entrega (`CheckoutForm`) → al confirmar, `orderService.
 createOrder` guarda el pedido y el carrito se vacía. El pedido queda
@@ -195,11 +196,10 @@ contenedores de layout (usar `<div>` con una clase propia).
 |-------------------|--------------------|------------------------------------------------------|
 | `/`               | → redirige         | a `/productos`                                        |
 | `/productos`      | `ProductosApple`   | Landing con secciones por categoría                   |
-| `/catalogo`       | `ProductoList`     | Grid de productos público + "Agregar al carrito"      |
-| `/producto/:id`   | `ProductoDetail`   | Ficha de un producto + "Agregar al carrito"           |
+| `/catalogo`       | `ProductoList`     | Grid de productos público; click abre `ProductQuickViewModal` (imagen + características) sobre la misma página — no navega a otra |
 | `/carrito`        | `CarritoPage`      | Carrito; el checkout pide iniciar sesión/registrarse    |
 | `/mis-pedidos`    | `MisPedidosPage`   | Pedidos de la cuenta logueada (enlace oculto sin sesión) |
-| `/rastrear-pedido`| `TrackOrderPage`   | Buscar un pedido por número + teléfono, sin cuenta      |
+| `/rastrear-pedido`| `TrackOrderPage`   | Buscar un pedido por número + teléfono, sin cuenta (enlace oculto con sesión — ahí se usa "Mis pedidos") |
 | `/admin`          | `AdminPage`        | Login si no hay sesión, "sin acceso" si no es admin, si no pestañas Pedidos/Productos |
 
 ### Cómo reconectar el backend
@@ -296,6 +296,23 @@ Puntos a tener en cuenta:
   cómo escribir el resto del proyecto hacia adelante.
 - **Gestión de productos movida a `/admin`:** antes vivía embebida en
   `/catalogo` (mostraba/ocultaba botones según sesión). Se separó en una
-  página propia para que `/catalogo` y `ProductoDetail` no necesiten saber
-  nada de `isAdmin` (una responsabilidad menos cada uno) y para que la
-  gestión de pedidos y productos esté en un solo lugar coherente.
+  página propia para que `/catalogo` no necesite saber nada de `isAdmin`
+  (una responsabilidad menos) y para que la gestión de pedidos y productos
+  esté en un solo lugar coherente.
+- **Detalle de producto como modal, no como página aparte:** `ProductoDetail`
+  (ruta `/producto/:id`) navegaba a otra página al hacer click en un
+  producto — se sentía como salir de la tienda. Se reemplazó por
+  `ProductQuickViewModal`, que muestra la misma información (imagen,
+  descripción, edición, año, precio, "Agregar al carrito") como overlay
+  sobre `/catalogo`, igual que el resto de los modales de la app.
+- **Nav responsive:** el nav de `ProductosApple.js` tiene `white-space: nowrap`
+  en sus items (para que "Cerrar sesión" no se parta en dos líneas), pero con
+  ~10 items no entra en pantallas angostas — el botón de sesión/login
+  quedaba fuera del viewport, invisible e inalcanzable, sin que el navegador
+  lo mostrara como scroll horizontal. Por eso en `@media (max-width: 700px)`
+  se ocultan los anclas de sección (iPhone/iPad/Watch/AirPods/Music-TV/iMac,
+  clase `.nav-section-link`) y la etiqueta de sesión ("Admin: correo" / "Hola,
+  Nombre", clase `.nav-session-label`), dejando solo lo esencial (logo,
+  Tienda, Mis pedidos o Rastrear pedido, botón de sesión). Si se agrega un
+  ítem nuevo al nav, probar en un viewport angosto (375px) que el botón de
+  sesión siga siendo visible.

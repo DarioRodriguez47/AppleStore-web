@@ -35,16 +35,19 @@ const AppleProducts = () => {
           <a href="#iphone">
             <img src={logo} alt="Apple logo" />
           </a>
-          <a href="#iphone">iPhone</a>
-          <a href="#ipad">iPad</a>
-          <a href="#watch">Watch</a>
-          <a href="#airpods">AirPods</a>
-          <a href="#musictv">Music / TV</a>
-          <a href="#imac">iMac</a>
+          <a href="#iphone" className="nav-section-link">iPhone</a>
+          <a href="#ipad" className="nav-section-link">iPad</a>
+          <a href="#watch" className="nav-section-link">Watch</a>
+          <a href="#airpods" className="nav-section-link">AirPods</a>
+          <a href="#musictv" className="nav-section-link">Music / TV</a>
+          <a href="#imac" className="nav-section-link">iMac</a>
           <Link to="/catalogo">Tienda</Link>
-          <Link to="/rastrear-pedido">Rastrear pedido</Link>
-          {user && !isAdmin && <Link to="/mis-pedidos">Mis pedidos</Link>}
-          <button type="button" className="nav-icon-button" aria-label="Buscar">
+          {user ? (
+            !isAdmin && <Link to="/mis-pedidos">Mis pedidos</Link>
+          ) : (
+            <Link to="/rastrear-pedido">Rastrear pedido</Link>
+          )}
+          <button type="button" className="nav-icon-button nav-section-link" aria-label="Buscar">
             <span className="fas fa-search"></span>
           </button>
           {user ? (

@@ -474,6 +474,22 @@ footer:hover img {
   }
 }
 
+/* En pantallas angostas el nav no entra con todos los enlaces de sección
+   (iPhone/iPad/Watch/AirPods/Music-TV/iMac) más los de cuenta — se ocultan
+   los de sección (son solo anclas a la misma landing) y se deja lo esencial:
+   logo, Tienda, Rastrear pedido, Mis pedidos y la sesión/login. */
+@media (max-width: 700px) {
+  .nav-section-link {
+    display: none;
+  }
+
+  /* "Admin: correo@..." / "Hola, Nombre" no entra junto al botón de cerrar
+     sesión en pantallas angostas; el botón solo ya es suficiente ahí. */
+  .nav-session-label {
+    display: none;
+  }
+}
+
 footer p {
   color: #fff;
   font-size: small;

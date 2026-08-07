@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { getProductos, getImage } from '../services/productoService';
 import { useCart } from '../cart/context/CartContext';
+import ProductQuickViewModal from './ProductQuickViewModal';
 import './ProductoList.css';
 
 const ProductoList = () => {
   const [productos, setProductos] = useState([]);
   const [addedId, setAddedId] = useState(null);
-  const navigate = useNavigate();
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const { addItem, totalItems } = useCart();
 
   useEffect(() => {
@@ -17,10 +18,6 @@ const ProductoList = () => {
   const fetchProductos = async () => {
     const response = await getProductos();
     setProductos(response.data.productos || []);
-  };
-
-  const goToProduct = (id) => {
-    navigate(`/producto/${id}`);
   };
 
   const handleAddToCart = (e, producto) => {
@@ -45,7 +42,7 @@ const ProductoList = () => {
 
       <ul className="product-grid">
         {productos.map((producto) => (
-          <li key={producto._id} className="product-card" onClick={() => goToProduct(producto._id)}>
+          <li key={producto._id} className="product-card" onClick={() => setSelectedProduct(producto)}>
             {producto.imagen && (
               <img src={getImage(producto.imagen)} alt={producto.nombre} className="product-image" />
             )}
@@ -66,6 +63,14 @@ const ProductoList = () => {
 
       {productos.length === 0 && (
         <p className="empty-state">No hay productos disponibles por ahora.</p>
+      )}
+
+      {selectedProduct && (
+        <ProductQuickViewModal
+          producto={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+          onAddToCart={addItem}
+        />
       )}
     </div>
   );
