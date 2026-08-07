@@ -204,7 +204,6 @@ const AppleProducts = () => {
       <footer>
         <p>Apple</p>
         <img src={logo} alt="" />
-        <p>EPN</p>
         <Link to="/admin" className="footer-admin-link">
           Admin
         </Link>
