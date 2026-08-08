@@ -49,6 +49,12 @@ src/
     AuthService.js            Capa de datos de autenticación (localStorage)
   context/
     AuthContext.js           Sesión + rol (cliente vs. administrador)
+  hooks/
+    useModalDismiss.js       Scroll-lock + Escape + click-afuera, compartido
+                              por los 3 modales de la app (antes duplicado)
+  utils/
+    safeStorage.js           localStorage envuelto en try/catch — si falla
+                              (cuota llena, modo privado), no tumba la app
   cart/                      Feature carrito+checkout (ver más abajo)
   admin/                     Feature panel administrativo (ver más abajo)
 ```
@@ -279,6 +285,16 @@ Puntos a tener en cuenta:
 
 ## Decisiones de diseño (por qué está así)
 
+- **Límite de 1.5MB en imágenes subidas desde el admin:** al guardarse como
+  data URL en `localStorage` (no hay servidor de archivos), una foto de
+  celular sin comprimir puede agotar la cuota del navegador y tumbar la app
+  entera (`QuotaExceededError` sin capturar). `ProductoForm` rechaza
+  archivos más pesados con un mensaje, y `safeStorage`/los servicios que
+  escriben en `localStorage` atrapan el error igual como defensa adicional.
+- **Teléfono normalizado solo por dígitos al rastrear un pedido:**
+  `trackOrder` compara `onlyDigits(input) === onlyDigits(guardado)` en vez
+  de string exacto, para que "099 123 4567" encuentre el mismo pedido que
+  "0991234567".
 - **Datos quemados en vez de backend real:** GitHub Pages solo sirve estático;
   meter una API real habría requerido pagar/mantener un servidor solo para una
   demo. `productoService.js`/`AuthService.js` simulan el backend con

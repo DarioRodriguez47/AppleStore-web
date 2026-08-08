@@ -12,25 +12,32 @@ const CarritoPage = () => {
   const { items, updateQuantity, removeItem, totalPrice, clearCart } = useCart();
   const { user } = useAuth();
   const [submitting, setSubmitting] = useState(false);
+  const [checkoutError, setCheckoutError] = useState('');
   const [confirmedOrder, setConfirmedOrder] = useState(null);
   const [showAuth, setShowAuth] = useState(false);
 
   const handleCheckout = async ({ cliente, entrega }) => {
     setSubmitting(true);
-    const response = await createOrder({
-      cliente: { ...cliente, email: user.email },
-      entrega,
-      items: items.map(({ id, nombre, precio, cantidad }) => ({
-        id,
-        nombre,
-        precio,
-        cantidad,
-      })),
-      total: totalPrice,
-    });
-    setSubmitting(false);
-    setConfirmedOrder(response.data.pedido);
-    clearCart();
+    setCheckoutError('');
+    try {
+      const response = await createOrder({
+        cliente: { ...cliente, email: user.email },
+        entrega,
+        items: items.map(({ id, nombre, precio, cantidad }) => ({
+          id,
+          nombre,
+          precio,
+          cantidad,
+        })),
+        total: totalPrice,
+      });
+      setConfirmedOrder(response.data.pedido);
+      clearCart();
+    } catch (err) {
+      setCheckoutError(err.message || 'No se pudo completar el pedido. Intenta de nuevo.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (confirmedOrder) {
@@ -74,7 +81,10 @@ const CarritoPage = () => {
         />
         {items.length > 0 && (
           user ? (
-            <CheckoutForm onSubmit={handleCheckout} submitting={submitting} />
+            <div>
+              {checkoutError && <p className="checkout-error">{checkoutError}</p>}
+              <CheckoutForm onSubmit={handleCheckout} submitting={submitting} />
+            </div>
           ) : (
             <div className="checkout-form login-required">
               <h3>Inicia sesión para comprar</h3>

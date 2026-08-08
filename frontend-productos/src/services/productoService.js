@@ -1,6 +1,8 @@
 // Servicio adaptado para sitio estático: usa JSON en `public/data` y localStorage para mutaciones.
 // El catálogo base (productos.json) se combina con lo que el usuario cree/edite/borre en localStorage,
 // para que el CRUD se sienta real aunque no haya backend.
+import { safeGetItem, safeSetItem } from "../utils/safeStorage";
+
 const BASE = process.env.PUBLIC_URL || "";
 const LOCAL_KEY = "productos_local";
 const DELETED_KEY = "productos_eliminados";
@@ -15,10 +17,10 @@ const cargarCatalogoBase = async () => {
 };
 
 const cargarProductosLocales = () =>
-  JSON.parse(localStorage.getItem(LOCAL_KEY) || "[]");
+  JSON.parse(safeGetItem(LOCAL_KEY) || "[]");
 
 const cargarEliminados = () =>
-  JSON.parse(localStorage.getItem(DELETED_KEY) || "[]");
+  JSON.parse(safeGetItem(DELETED_KEY) || "[]");
 
 const obtenerCatalogoCompleto = async () => {
   const base = await cargarCatalogoBase();
@@ -50,7 +52,9 @@ export const saveProducto = async (producto) => {
   const stored = cargarProductosLocales();
   const nuevoProducto = { ...producto, _id: producto._id || `local_${Date.now()}` };
   stored.push(nuevoProducto);
-  localStorage.setItem(LOCAL_KEY, JSON.stringify(stored));
+  if (!safeSetItem(LOCAL_KEY, JSON.stringify(stored))) {
+    throw new Error("No se pudo guardar el producto. Intenta con una imagen más liviana.");
+  }
   return { data: { producto: nuevoProducto } };
 };
 
@@ -70,7 +74,9 @@ export const updateProducto = async (id, producto) => {
     stored.push(productoActualizado);
   }
 
-  localStorage.setItem(LOCAL_KEY, JSON.stringify(stored));
+  if (!safeSetItem(LOCAL_KEY, JSON.stringify(stored))) {
+    throw new Error("No se pudo guardar el producto. Intenta con una imagen más liviana.");
+  }
   return { data: { producto: productoActualizado } };
 };
 
@@ -78,12 +84,12 @@ export const deleteProducto = async (id) => {
   const stored = cargarProductosLocales().filter(
     (p) => String(p._id) !== String(id),
   );
-  localStorage.setItem(LOCAL_KEY, JSON.stringify(stored));
+  safeSetItem(LOCAL_KEY, JSON.stringify(stored));
 
   const eliminados = cargarEliminados();
   if (!eliminados.includes(String(id))) {
     eliminados.push(String(id));
-    localStorage.setItem(DELETED_KEY, JSON.stringify(eliminados));
+    safeSetItem(DELETED_KEY, JSON.stringify(eliminados));
   }
 
   return { data: { deleted: id } };

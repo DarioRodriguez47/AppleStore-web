@@ -47,9 +47,6 @@ const AppleProducts = () => {
           ) : (
             <Link to="/rastrear-pedido">Rastrear pedido</Link>
           )}
-          <button type="button" className="nav-icon-button nav-section-link" aria-label="Buscar">
-            <span className="fas fa-search"></span>
-          </button>
           {user ? (
             <div className="nav-session">
               <Link
@@ -105,7 +102,7 @@ const AppleProducts = () => {
             <h1>iPad Pro</h1>
             <h3>El iPad en su máxima expresión</h3>
             <Link to="/catalogo" className="enlace-info">
-              Más informacion <span className="fas fa-angle-right"></span>
+              Más informacion <span className="arrow-icon" aria-hidden="true">›</span>
             </Link>
           </div>
           <div className="span9">
@@ -123,7 +120,7 @@ const AppleProducts = () => {
             <img src={watch} alt="" />
             <h1>Te ayuda a hacer más. Por menos de lo que crees.</h1>
             <Link to="/catalogo" className="enlace-info">
-              Más informacion <span className="fas fa-angle-right"></span>
+              Más informacion <span className="arrow-icon" aria-hidden="true">›</span>
             </Link>
           </div>
         </div>
@@ -135,7 +132,7 @@ const AppleProducts = () => {
             <h1>Airpods</h1>
             <h3>Cada uno tiene su magia.</h3>
             <Link to="/catalogo" className="enlace-info">
-              Más informacion <span className="fas fa-angle-right"></span>
+              Más informacion <span className="arrow-icon" aria-hidden="true">›</span>
             </Link>
           </div>
           <div className="span6">
@@ -151,7 +148,7 @@ const AppleProducts = () => {
               <img src={appletv} alt="" className="icon" />
               <h3>Obtén 1 año gratis de Apple TV+ al comprar un iPad.</h3>
               <Link to="/catalogo" className="enlace-info">
-                Más informacion <span className="fas fa-angle-right"></span>
+                Más informacion <span className="arrow-icon" aria-hidden="true">›</span>
               </Link>
             </div>
             <div className="imagen">
@@ -163,7 +160,7 @@ const AppleProducts = () => {
               <img src={applemusic} alt="" className="icon" />
               <h3>Más de 75 millones de canciones. 3 meses gratis.</h3>
               <Link to="/catalogo" className="enlace-info">
-                Más informacion <span className="fas fa-angle-right"></span>
+                Más informacion <span className="arrow-icon" aria-hidden="true">›</span>
               </Link>
             </div>
             <div className="imagen">
@@ -180,7 +177,7 @@ const AppleProducts = () => {
             <h2>Dile hola.</h2>
             <h3>Consulta disponibilidad más adelante.</h3>
             <Link to="/catalogo" className="enlace-info">
-              Más informacion <span className="fas fa-angle-right"></span>
+              Más informacion <span className="arrow-icon" aria-hidden="true">›</span>
             </Link>
           </div>
           <div className="span12 img-container">
@@ -195,7 +192,7 @@ const AppleProducts = () => {
             <h1>Explora el catálogo completo</h1>
             <h3>Precios, ediciones y disponibilidad de cada producto.</h3>
             <Link to="/catalogo" className="enlace-info">
-              Ir a la tienda <span className="fas fa-angle-right"></span>
+              Ir a la tienda <span className="arrow-icon" aria-hidden="true">›</span>
             </Link>
           </div>
         </div>

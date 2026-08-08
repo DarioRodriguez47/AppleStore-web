@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { safeGetItem, safeSetItem } from "../../utils/safeStorage";
 
 const CART_KEY = "cart_items";
 
@@ -6,12 +7,12 @@ const CartContext = createContext(null);
 
 export const CartProvider = ({ children }) => {
   const [items, setItems] = useState(() => {
-    const stored = localStorage.getItem(CART_KEY);
+    const stored = safeGetItem(CART_KEY);
     return stored ? JSON.parse(stored) : [];
   });
 
   useEffect(() => {
-    localStorage.setItem(CART_KEY, JSON.stringify(items));
+    safeSetItem(CART_KEY, JSON.stringify(items));
   }, [items]);
 
   const addItem = (producto) => {

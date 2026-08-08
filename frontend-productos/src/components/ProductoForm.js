@@ -4,25 +4,37 @@ import React, { useState } from 'react';
 import { saveProducto, updateProducto, getImage } from '../services/productoService';
 import './ProductoForm.css';
 
+// Sin backend, la imagen se guarda como data URL en localStorage — un
+// archivo grande (foto de celular sin comprimir) puede agotar la cuota de
+// localStorage y tumbar la app. Se limita el tamaño aceptado.
+const MAX_IMAGE_SIZE = 1.5 * 1024 * 1024; // 1.5MB
+
 const ProductoForm = ({ producto, isEdit, fetchProductos, onCancel }) => {
   const [formData, setFormData] = useState({
     nombre: producto?.nombre || '',
     descripcion: producto?.descripcion || '',
     edicion: producto?.edicion || '',
-    anio: producto?.anio || '',
-    precio: producto?.precio || '',
+    anio: producto?.anio ?? '',
+    precio: producto?.precio ?? '',
     imagen: producto?.imagen || null
   });
+  const [imageError, setImageError] = useState('');
+  const [submitError, setSubmitError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // No hay backend: la imagen se guarda como data URL para que el CRUD
-  // se vea completo sin necesitar un servidor de archivos.
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+    if (file.size > MAX_IMAGE_SIZE) {
+      setImageError('La imagen es muy pesada (máximo 1.5MB). Elige una más liviana.');
+      e.target.value = '';
+      return;
+    }
+    setImageError('');
     const reader = new FileReader();
     reader.onload = () => setFormData((prev) => ({ ...prev, imagen: reader.result }));
     reader.readAsDataURL(file);
@@ -30,12 +42,25 @@ const ProductoForm = ({ producto, isEdit, fetchProductos, onCancel }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isEdit) {
-      await updateProducto(producto._id, formData);
-    } else {
-      await saveProducto(formData);
+    setSubmitError('');
+    setSubmitting(true);
+    const payload = {
+      ...formData,
+      anio: formData.anio === '' ? '' : Number(formData.anio),
+      precio: formData.precio === '' ? '' : Number(formData.precio),
+    };
+    try {
+      if (isEdit) {
+        await updateProducto(producto._id, payload);
+      } else {
+        await saveProducto(payload);
+      }
+      fetchProductos();
+    } catch (err) {
+      setSubmitError(err.message || 'No se pudo guardar el producto.');
+    } finally {
+      setSubmitting(false);
     }
-    fetchProductos();
   };
 
   const previewSrc = formData.imagen?.startsWith("data:")
@@ -127,11 +152,14 @@ const ProductoForm = ({ producto, isEdit, fetchProductos, onCancel }) => {
             className="form-input"
           />
         </div>
+        {imageError && <p className="image-error">{imageError}</p>}
       </div>
 
+      {submitError && <p className="image-error">{submitError}</p>}
+
       <div className="form-actions">
-        <button type="submit" className="submit-button">
-          {isEdit ? "Guardar cambios" : "Crear producto"}
+        <button type="submit" className="submit-button" disabled={submitting}>
+          {submitting ? "Guardando..." : isEdit ? "Guardar cambios" : "Crear producto"}
         </button>
         {onCancel && (
           <button type="button" className="cancel-button" onClick={onCancel}>

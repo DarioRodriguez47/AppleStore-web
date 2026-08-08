@@ -1,28 +1,11 @@
-import React, { useEffect } from "react";
+import React from "react";
 import ProductoForm from "../../components/ProductoForm";
+import { useModalDismiss } from "../../hooks/useModalDismiss";
 import "../../components/modals/Modal.css";
 import "./ProductFormModal.css";
 
 const ProductFormModal = ({ producto, isEdit, onClose, fetchProductos }) => {
-  useEffect(() => {
-    const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = originalOverflow;
-    };
-  }, []);
-
-  useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [onClose]);
-
-  const handleOverlayClick = (e) => {
-    if (e.target === e.currentTarget) onClose();
-  };
+  const handleOverlayClick = useModalDismiss(onClose);
 
   return (
     <div className="login-overlay" onClick={handleOverlayClick}>

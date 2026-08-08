@@ -1,5 +1,7 @@
 // Servicio de pedidos: mismo patrón que productoService (localStorage a modo
 // de "backend"), para que el checkout se sienta completo sin servidor real.
+import { safeGetItem, safeSetItem } from "../../utils/safeStorage";
+
 const ORDERS_KEY = "pedidos";
 
 export const ESTADOS_PEDIDO = [
@@ -11,7 +13,7 @@ export const ESTADOS_PEDIDO = [
 ];
 
 const seedSampleOrders = () => {
-  if (localStorage.getItem(ORDERS_KEY)) return;
+  if (safeGetItem(ORDERS_KEY)) return;
   const sampleOrders = [
     {
       id: "ord_1785597600000",
@@ -38,13 +40,17 @@ const seedSampleOrders = () => {
       estado: "pendiente",
     },
   ];
-  localStorage.setItem(ORDERS_KEY, JSON.stringify(sampleOrders));
+  safeSetItem(ORDERS_KEY, JSON.stringify(sampleOrders));
 };
 seedSampleOrders();
 
-const readOrders = () => JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]");
-const writeOrders = (orders) =>
-  localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+const readOrders = () => JSON.parse(safeGetItem(ORDERS_KEY) || "[]");
+const writeOrders = (orders) => safeSetItem(ORDERS_KEY, JSON.stringify(orders));
+
+// El teléfono se compara solo por dígitos, para que "099 123 4567" y
+// "0991234567" (o con guiones) se reconozcan como el mismo número tanto al
+// rastrear un pedido como al filtrar por cuenta.
+const onlyDigits = (value) => String(value || "").replace(/\D/g, "");
 
 export const getOrders = async () => {
   const pedidos = [...readOrders()].sort(
@@ -74,7 +80,9 @@ export const createOrder = async ({ cliente, entrega, items, total }) => {
   };
   const orders = readOrders();
   orders.push(pedido);
-  writeOrders(orders);
+  if (!writeOrders(orders)) {
+    throw new Error("No se pudo registrar el pedido. Intenta de nuevo.");
+  }
   return { data: { pedido } };
 };
 
@@ -97,9 +105,9 @@ export const updateOrderStatus = async (id, estado) => {
 // adivinar el número.
 export const trackOrder = async (numeroPedido, telefono) => {
   const numero = String(numeroPedido || "").trim();
-  const tel = String(telefono || "").trim();
+  const tel = onlyDigits(telefono);
   const pedido = readOrders().find(
-    (o) => formatOrderId(o.id) === numero && o.cliente.telefono === tel,
+    (o) => formatOrderId(o.id) === numero && onlyDigits(o.cliente.telefono) === tel,
   );
   return { data: { pedido: pedido || null } };
 };

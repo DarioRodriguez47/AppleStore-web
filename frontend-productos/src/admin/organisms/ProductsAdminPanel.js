@@ -17,7 +17,10 @@ const ProductsAdminPanel = () => {
     fetchProductos();
   }, []);
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id, nombre) => {
+    if (!window.confirm(`¿Eliminar "${nombre}" del catálogo? Esta acción no se puede deshacer.`)) {
+      return;
+    }
     await deleteProducto(id);
     fetchProductos();
   };
@@ -87,7 +90,7 @@ const ProductsAdminPanel = () => {
                 <button className="admin-edit-button" onClick={() => startEdit(producto)}>
                   Editar
                 </button>
-                <button className="delete-button" onClick={() => handleDelete(producto._id)}>
+                <button className="delete-button" onClick={() => handleDelete(producto._id, producto.nombre)}>
                   Eliminar
                 </button>
               </div>

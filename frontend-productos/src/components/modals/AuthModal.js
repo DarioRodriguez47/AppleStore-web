@@ -1,33 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "../AppleProducts.css";
 import "./Modal.css";
+import { useModalDismiss } from "../../hooks/useModalDismiss";
 import LoginView from "../LoginView";
 import RegisterView from "../RegisterView";
 import ForgotPasswordView from "./ForgotPasswordView";
 
 const AuthModal = ({ initialView = "login", onClose }) => {
   const [view, setView] = useState(initialView); // 'login' | 'register' | 'forgot'
-
-  // Deshabilitar scroll del body al abrir el modal
-  useEffect(() => {
-    const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = originalOverflow;
-    };
-  }, []);
-
-  useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [onClose]);
-
-  const handleOverlayClick = (e) => {
-    if (e.target === e.currentTarget) onClose();
-  };
+  const handleOverlayClick = useModalDismiss(onClose);
 
   return (
     <div className="login-overlay" onClick={handleOverlayClick}>

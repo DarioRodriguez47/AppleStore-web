@@ -66,6 +66,12 @@
   flex-shrink: 0;
 }
 
+.image-error {
+  color: #d70000;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
 .image-field .form-input {
   flex: 1;
 }

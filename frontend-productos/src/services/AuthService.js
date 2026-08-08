@@ -3,6 +3,7 @@
 // Nota interna: persiste en localStorage (no hay backend propio todavía).
 // Ningún mensaje de cara al usuario debe delatar esto — mantenerlos como
 // los de un login real.
+import { safeGetItem, safeSetItem } from "../utils/safeStorage";
 
 const USERS_KEY = "static_users";
 
@@ -16,15 +17,15 @@ const ADMIN_DEMO_USER = {
 };
 
 const seedDemoAdmin = () => {
-  const users = JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
+  const users = JSON.parse(safeGetItem(USERS_KEY) || "[]");
   if (users.length === 0) {
-    localStorage.setItem(USERS_KEY, JSON.stringify([ADMIN_DEMO_USER]));
+    safeSetItem(USERS_KEY, JSON.stringify([ADMIN_DEMO_USER]));
   }
 };
 seedDemoAdmin();
 
 export const login = async (username, password) => {
-  const users = JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
+  const users = JSON.parse(safeGetItem(USERS_KEY) || "[]");
   const user = users.find(
     (u) => u.username === username && u.password === password,
   );
@@ -36,12 +37,14 @@ export const login = async (username, password) => {
 };
 
 export const register = async (username, password, extra = {}) => {
-  const users = JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
+  const users = JSON.parse(safeGetItem(USERS_KEY) || "[]");
   if (users.find((u) => u.username === username))
     throw new Error("Ya existe una cuenta con ese correo");
   const newUser = { username, password, ...extra, role: "cliente" };
   users.push(newUser);
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
+  if (!safeSetItem(USERS_KEY, JSON.stringify(users))) {
+    throw new Error("No se pudo crear la cuenta. Intenta de nuevo.");
+  }
   return { message: "Cuenta creada correctamente" };
 };
 
@@ -49,8 +52,4 @@ export const requestPasswordReset = async (email) => {
   return {
     message: "Si el correo está registrado, recibirás instrucciones para restablecer tu contraseña.",
   };
-};
-
-export const resetPassword = async (token, password) => {
-  return { message: "Contraseña actualizada correctamente." };
 };

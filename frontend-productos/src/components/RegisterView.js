@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { register } from "../services/AuthService";
 import { useAuth } from "../context/AuthContext";
 
-const RegisterView = ({ onSwitch, onRegistered, onClose }) => {
+const RegisterView = ({ onSwitch, onClose }) => {
   const { login } = useAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

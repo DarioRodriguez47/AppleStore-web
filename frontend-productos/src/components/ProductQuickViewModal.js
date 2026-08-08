@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { getImage } from "../services/productoService";
+import { useModalDismiss } from "../hooks/useModalDismiss";
 import "./modals/Modal.css";
 import "./ProductQuickViewModal.css";
 
@@ -7,26 +8,7 @@ import "./ProductQuickViewModal.css";
 // igual que el resto de los modales de la app (login, formulario de admin).
 const ProductQuickViewModal = ({ producto, onClose, onAddToCart }) => {
   const [added, setAdded] = useState(false);
-
-  useEffect(() => {
-    const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = originalOverflow;
-    };
-  }, []);
-
-  useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [onClose]);
-
-  const handleOverlayClick = (e) => {
-    if (e.target === e.currentTarget) onClose();
-  };
+  const handleOverlayClick = useModalDismiss(onClose);
 
   const handleAddToCart = () => {
     onAddToCart(producto);
