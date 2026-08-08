@@ -11,8 +11,23 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  flex-wrap: wrap;
   margin-bottom: 32px;
+}
+
+/* En pantallas angostas el título centrado (flex:1) queda apretado junto
+   al link o al botón en vez de centrarse de verdad — se apila en 3 filas
+   claras (volver / título / carrito) en vez de dejar que el wrap del flex
+   decida el acomodo. */
+@media (max-width: 640px) {
+  .product-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .product-title {
+    order: 0;
+  }
 }
 
 .back-link {
