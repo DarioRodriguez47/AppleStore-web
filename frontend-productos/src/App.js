@@ -2,6 +2,7 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProductoList from "./components/ProductoList";
 import AppleProducts from "./components/ProductosApple";
+import ScrollToTop from "./components/ScrollToTop";
 import CarritoPage from "./cart/pages/CarritoPage";
 import MisPedidosPage from "./cart/pages/MisPedidosPage";
 import TrackOrderPage from "./cart/pages/TrackOrderPage";
@@ -10,15 +11,18 @@ import "./index.css"
 
 const App = () => {
   return (
-    <Routes>
-      <Route path="/productos" element={<AppleProducts/>} />
-      <Route path="/" element={<Navigate to="/productos" />} />
-      <Route path="/catalogo" element={<ProductoList />} />
-      <Route path="/carrito" element={<CarritoPage />} />
-      <Route path="/mis-pedidos" element={<MisPedidosPage />} />
-      <Route path="/rastrear-pedido" element={<TrackOrderPage />} />
-      <Route path="/admin" element={<AdminPage />} />
-    </Routes>
+    <>
+      <ScrollToTop />
+      <Routes>
+        <Route path="/productos" element={<AppleProducts/>} />
+        <Route path="/" element={<Navigate to="/productos" />} />
+        <Route path="/catalogo" element={<ProductoList />} />
+        <Route path="/carrito" element={<CarritoPage />} />
+        <Route path="/mis-pedidos" element={<MisPedidosPage />} />
+        <Route path="/rastrear-pedido" element={<TrackOrderPage />} />
+        <Route path="/admin" element={<AdminPage />} />
+      </Routes>
+    </>
   );
 };
 
