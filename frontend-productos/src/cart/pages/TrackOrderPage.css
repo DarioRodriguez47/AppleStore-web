@@ -6,40 +6,110 @@
   background-color: #fafafa;
 }
 
+.track-order-header {
+  text-align: center;
+  margin: 24px 0 28px;
+}
+
+.track-order-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  background: #eaf3ff;
+  color: #0071e3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.track-order-icon svg {
+  width: 28px;
+  height: 28px;
+}
+
 .track-order-title {
-  font-size: 32px;
+  font-size: 30px;
   font-weight: 600;
   color: #1d1d1f;
-  margin: 16px 0 8px;
+  margin-bottom: 8px;
 }
 
 .track-order-subtitle {
   color: #6e6e73;
   font-size: 14px;
-  margin-bottom: 24px;
+  max-width: 320px;
+  margin: 0 auto;
 }
 
 .track-order-form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
   background: #fff;
   border-radius: 16px;
-  padding: 24px;
+  padding: 28px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
   margin-bottom: 24px;
 }
 
-.track-order-form input {
+.track-order-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.track-order-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1d1d1f;
+}
+
+.track-order-field input {
   padding: 12px;
   border: 1px solid #e1e1e1;
   border-radius: 8px;
   font-size: 15px;
+  transition: border-color 0.2s ease;
+}
+
+.track-order-field input:focus {
+  border-color: #0071e3;
+  outline: none;
 }
 
 .track-order-empty {
   text-align: center;
-  color: #6e6e73;
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.track-order-empty-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #f5f5f7;
+  color: #86868b;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.track-order-empty p {
+  color: #1d1d1f;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.track-order-empty-hint {
+  color: #6e6e73 !important;
+  font-weight: 400 !important;
+  font-size: 13px;
 }
 
 .track-order-result {

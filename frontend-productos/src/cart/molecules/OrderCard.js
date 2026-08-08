@@ -1,5 +1,6 @@
 import React from "react";
 import StatusBadge from "../atoms/StatusBadge";
+import OrderStatusTracker from "./OrderStatusTracker";
 import { formatOrderId } from "../services/orderService";
 import "./OrderCard.css";
 
@@ -14,6 +15,8 @@ const OrderCard = ({ pedido }) => (
       </div>
       <StatusBadge estado={pedido.estado} />
     </div>
+
+    <OrderStatusTracker estado={pedido.estado} />
 
     <ul className="order-card-items">
       {pedido.items.map((item) => (
