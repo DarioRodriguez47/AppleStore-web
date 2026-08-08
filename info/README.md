@@ -9,6 +9,21 @@
 
 ---
 
+## Pitch
+
+Plataforma de e-commerce completa —catálogo, carrito, checkout, seguimiento
+de pedidos y panel administrativo con control de acceso por roles— diseñada
+y desarrollada de punta a punta en React. La capa de servicios desacopla la
+UI de la fuente de datos, de modo que migrar a un backend real (ya
+esbozado en el repo con Node/Express/MongoDB) no requeriría tocar un solo
+componente. Incluye pruebas automatizadas, CI/CD con GitHub Actions y doble
+despliegue continuo (GitHub Pages + Vercel).
+
+**Stack:** React 18 · React Router 6 · Context API · Jest / RTL · Node.js +
+Express + MongoDB · GitHub Actions · Vercel & GitHub Pages
+
+---
+
 ## 1. Resumen
 
 Tienda online completa (catálogo, carrito, checkout, seguimiento de
