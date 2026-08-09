@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/AppleStore-web/static/css/main.8aa3a0f0.css",
-    "main.js": "/AppleStore-web/static/js/main.4ef71a45.js",
+    "main.css": "/AppleStore-web/static/css/main.7b5c557c.css",
+    "main.js": "/AppleStore-web/static/js/main.f10b0031.js",
     "static/js/453.d8628358.chunk.js": "/AppleStore-web/static/js/453.d8628358.chunk.js",
     "static/media/image8.png": "/AppleStore-web/static/media/image8.ce8aaaa720ad55aefeb7.png",
     "static/media/image2.jpg": "/AppleStore-web/static/media/image2.5e3ed3d62a0143eaf3f0.jpg",
@@ -13,12 +13,12 @@
     "static/media/image9.jpg": "/AppleStore-web/static/media/image9.1d7e8b21202960c61296.jpg",
     "static/media/image6.jpg": "/AppleStore-web/static/media/image6.2829387bccd21bc51610.jpg",
     "index.html": "/AppleStore-web/index.html",
-    "main.8aa3a0f0.css.map": "/AppleStore-web/static/css/main.8aa3a0f0.css.map",
-    "main.4ef71a45.js.map": "/AppleStore-web/static/js/main.4ef71a45.js.map",
+    "main.7b5c557c.css.map": "/AppleStore-web/static/css/main.7b5c557c.css.map",
+    "main.f10b0031.js.map": "/AppleStore-web/static/js/main.f10b0031.js.map",
     "453.d8628358.chunk.js.map": "/AppleStore-web/static/js/453.d8628358.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.8aa3a0f0.css",
-    "static/js/main.4ef71a45.js"
+    "static/css/main.7b5c557c.css",
+    "static/js/main.f10b0031.js"
   ]
 }
