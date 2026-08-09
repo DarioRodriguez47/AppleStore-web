@@ -6,6 +6,8 @@ import { createOrder, formatOrderId } from "../services/orderService";
 import CartSummary from "../organisms/CartSummary";
 import CheckoutForm from "../organisms/CheckoutForm";
 import AuthModal from "../../components/modals/AuthModal";
+import ConfirmModal from "../../components/modals/ConfirmModal";
+import { useConfirm } from "../../hooks/useConfirm";
 import "./CarritoPage.css";
 
 const CarritoPage = () => {
@@ -15,8 +17,21 @@ const CarritoPage = () => {
   const [checkoutError, setCheckoutError] = useState('');
   const [confirmedOrder, setConfirmedOrder] = useState(null);
   const [showAuth, setShowAuth] = useState(false);
+  const { pending, requestConfirm, handleConfirm, handleCancel } = useConfirm();
 
-  const handleCheckout = async ({ cliente, entrega }) => {
+  const handleRemoveItem = (id) => {
+    const item = items.find((i) => i.id === id);
+    requestConfirm(
+      {
+        title: "Quitar producto",
+        message: `¿Quitar "${item?.nombre}" del carrito?`,
+        confirmLabel: "Quitar",
+      },
+      () => removeItem(id)
+    );
+  };
+
+  const submitOrder = async ({ cliente, entrega }) => {
     setSubmitting(true);
     setCheckoutError('');
     try {
@@ -38,6 +53,17 @@ const CarritoPage = () => {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleCheckout = ({ cliente, entrega }) => {
+    requestConfirm(
+      {
+        title: "Confirmar pedido",
+        message: `¿Confirmar tu pedido por $${totalPrice}? Recibirás la confirmación al instante.`,
+        confirmLabel: "Confirmar pedido",
+      },
+      () => submitOrder({ cliente, entrega })
+    );
   };
 
   if (confirmedOrder) {
@@ -76,7 +102,7 @@ const CarritoPage = () => {
         <CartSummary
           items={items}
           onUpdateQuantity={updateQuantity}
-          onRemove={removeItem}
+          onRemove={handleRemoveItem}
           total={totalPrice}
         />
         {items.length > 0 && (
@@ -99,6 +125,16 @@ const CarritoPage = () => {
 
       {showAuth && (
         <AuthModal initialView="register" onClose={() => setShowAuth(false)} />
+      )}
+
+      {pending && (
+        <ConfirmModal
+          title={pending.title}
+          message={pending.message}
+          confirmLabel={pending.confirmLabel}
+          onConfirm={handleConfirm}
+          onCancel={handleCancel}
+        />
       )}
     </div>
   );

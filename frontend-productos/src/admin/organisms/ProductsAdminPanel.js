@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { getProductos, deleteProducto, getImage } from "../../services/productoService";
 import ProductFormModal from "./ProductFormModal";
+import ConfirmModal from "../../components/modals/ConfirmModal";
+import { useConfirm } from "../../hooks/useConfirm";
 import "./ProductsAdminPanel.css";
 
 const ProductsAdminPanel = () => {
   const [productos, setProductos] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState(null);
+  const { pending, requestConfirm, handleConfirm, handleCancel } = useConfirm();
 
   const fetchProductos = async () => {
     const response = await getProductos();
@@ -17,12 +20,19 @@ const ProductsAdminPanel = () => {
     fetchProductos();
   }, []);
 
-  const handleDelete = async (id, nombre) => {
-    if (!window.confirm(`¿Eliminar "${nombre}" del catálogo? Esta acción no se puede deshacer.`)) {
-      return;
-    }
-    await deleteProducto(id);
-    fetchProductos();
+  const handleDelete = (id, nombre) => {
+    requestConfirm(
+      {
+        title: "Eliminar producto",
+        message: `¿Eliminar "${nombre}" del catálogo? Esta acción no se puede deshacer.`,
+        confirmLabel: "Eliminar",
+        danger: true,
+      },
+      async () => {
+        await deleteProducto(id);
+        fetchProductos();
+      }
+    );
   };
 
   const closeForm = () => {
@@ -97,6 +107,17 @@ const ProductsAdminPanel = () => {
             </li>
           ))}
         </ul>
+      )}
+
+      {pending && (
+        <ConfirmModal
+          title={pending.title}
+          message={pending.message}
+          confirmLabel={pending.confirmLabel}
+          danger={pending.danger}
+          onConfirm={handleConfirm}
+          onCancel={handleCancel}
+        />
       )}
     </div>
   );

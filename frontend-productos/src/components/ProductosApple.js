@@ -15,10 +15,13 @@ import imagen8 from "../img/image8.png";
 import imagen9 from "../img/image9.jpg";
 import { useState } from "react";
 import { AuthModal } from "./modals";
+import ConfirmModal from "./modals/ConfirmModal";
 import { useAuth } from "../context/AuthContext";
+import { useConfirm } from "../hooks/useConfirm";
 const AppleProducts = () => {
   const [showLogin, setShowLogin] = useState(false);
   const { user, isAdmin, logout } = useAuth();
+  const { pending, requestConfirm, handleConfirm, handleCancel } = useConfirm();
 
   const handleLoginClick = () => {
     setShowLogin(true);
@@ -26,6 +29,17 @@ const AppleProducts = () => {
 
   const handleCloseLogin = () => {
     setShowLogin(false);
+  };
+
+  const handleLogoutClick = () => {
+    requestConfirm(
+      {
+        title: "Cerrar sesión",
+        message: "¿Seguro que quieres cerrar sesión?",
+        confirmLabel: "Cerrar sesión",
+      },
+      logout
+    );
   };
 
   return (
@@ -55,7 +69,7 @@ const AppleProducts = () => {
               >
                 {isAdmin ? `Admin: ${user.email}` : `Hola, ${user.name || user.email}`}
               </Link>
-              <button className="nav-login-button" onClick={logout}>
+              <button className="nav-login-button" onClick={handleLogoutClick}>
                 Cerrar sesión
               </button>
             </div>
@@ -68,6 +82,16 @@ const AppleProducts = () => {
       </nav>
 
       {showLogin && <AuthModal onClose={handleCloseLogin} />}
+
+      {pending && (
+        <ConfirmModal
+          title={pending.title}
+          message={pending.message}
+          confirmLabel={pending.confirmLabel}
+          onConfirm={handleConfirm}
+          onCancel={handleCancel}
+        />
+      )}
 
       <header id="iphone">
         <div className="grid">

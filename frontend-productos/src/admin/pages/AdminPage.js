@@ -4,16 +4,28 @@ import { useAuth } from "../../context/AuthContext";
 import InlineLoginForm from "../../components/InlineLoginForm";
 import OrdersTable from "../organisms/OrdersTable";
 import ProductsAdminPanel from "../organisms/ProductsAdminPanel";
+import ConfirmModal from "../../components/modals/ConfirmModal";
+import { useConfirm } from "../../hooks/useConfirm";
 import "./AdminPage.css";
 
 const AdminPage = () => {
   const { user, isAdmin, logout } = useAuth();
   const [tab, setTab] = useState("pedidos");
   const navigate = useNavigate();
+  const { pending, requestConfirm, handleConfirm, handleCancel } = useConfirm();
 
   const handleLogout = () => {
-    logout();
-    navigate("/productos");
+    requestConfirm(
+      {
+        title: "Cerrar sesión",
+        message: "¿Seguro que quieres cerrar sesión de administrador?",
+        confirmLabel: "Cerrar sesión",
+      },
+      () => {
+        logout();
+        navigate("/productos");
+      }
+    );
   };
 
   if (!user) {
@@ -71,6 +83,16 @@ const AdminPage = () => {
       <div className="admin-content">
         {tab === "pedidos" ? <OrdersTable /> : <ProductsAdminPanel />}
       </div>
+
+      {pending && (
+        <ConfirmModal
+          title={pending.title}
+          message={pending.message}
+          confirmLabel={pending.confirmLabel}
+          onConfirm={handleConfirm}
+          onCancel={handleCancel}
+        />
+      )}
     </div>
   );
 };

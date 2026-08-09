@@ -6,10 +6,13 @@ import {
   ESTADOS_PEDIDO,
 } from "../../cart/services/orderService";
 import StatusBadge, { ESTADO_LABELS } from "../../cart/atoms/StatusBadge";
+import ConfirmModal from "../../components/modals/ConfirmModal";
+import { useConfirm } from "../../hooks/useConfirm";
 import "./OrdersTable.css";
 
 const OrdersTable = () => {
   const [pedidos, setPedidos] = useState([]);
+  const { pending, requestConfirm, handleConfirm, handleCancel } = useConfirm();
 
   const fetchPedidos = async () => {
     const response = await getOrders();
@@ -20,9 +23,19 @@ const OrdersTable = () => {
     fetchPedidos();
   }, []);
 
-  const handleStatusChange = async (id, estado) => {
-    await updateOrderStatus(id, estado);
-    fetchPedidos();
+  const handleStatusChange = (id, estado) => {
+    requestConfirm(
+      {
+        title: "Cambiar estado del pedido",
+        message: `¿Cambiar el pedido #${formatOrderId(id)} a "${ESTADO_LABELS[estado]}"?`,
+        confirmLabel: "Cambiar estado",
+        danger: estado === "cancelado",
+      },
+      async () => {
+        await updateOrderStatus(id, estado);
+        fetchPedidos();
+      }
+    );
   };
 
   if (pedidos.length === 0) {
@@ -88,6 +101,17 @@ const OrdersTable = () => {
           ))}
         </tbody>
       </table>
+
+      {pending && (
+        <ConfirmModal
+          title={pending.title}
+          message={pending.message}
+          confirmLabel={pending.confirmLabel}
+          danger={pending.danger}
+          onConfirm={handleConfirm}
+          onCancel={handleCancel}
+        />
+      )}
     </div>
   );
 };
